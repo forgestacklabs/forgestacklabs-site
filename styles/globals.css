@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-ink text-white antialiased;
+  font-feature-settings: "ss01" on, "ss02" on;
+}
+
+::selection {
+  background: rgba(124, 140, 244, 0.3);
+}
+
+.glass-panel {
+  background: rgba(15, 17, 23, 0.72);
+  border: 1px solid rgba(124, 140, 244, 0.12);
+  backdrop-filter: blur(16px);
+}
+
+.section-title {
+  @apply text-2xl md:text-3xl font-semibold tracking-tight;
+}
+
+.section-copy {
+  @apply text-base md:text-lg text-mist leading-relaxed;
+}
