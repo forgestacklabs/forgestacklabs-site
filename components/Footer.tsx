@@ -21,7 +21,7 @@ export default function Footer() {
               FORGESTACK
             </h3>
             <p className="text-sm font-light leading-relaxed text-white/50">
-              Building products that matter. We partner with ambitious businesses to create lasting digital impact.
+             We are focused on building internal products that solve key industry challenges
             </p>
           </div>
 
