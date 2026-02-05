@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 
 export default function HomePage() {
   const [showIntro, setShowIntro] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -16,10 +17,26 @@ export default function HomePage() {
   const scale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
 
   useEffect(() => {
-    // Increased from 3500ms to 5500ms so animation stays visible longer
-    const timer = setTimeout(() => setShowIntro(false), 5500);
-    return () => clearTimeout(timer);
+    // Check if mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    // Extended timer to 6500ms so all animations complete
+    const timer = setTimeout(() => setShowIntro(false), 6500);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
+
+  // Reduce particle counts on mobile
+  const particleCount = isMobile ? 40 : 100;
+  const lineCount = isMobile ? 8 : 20;
+  const orbCount = isMobile ? 3 : 5;
+  const floatingOrbCount = isMobile ? 8 : 15;
 
   return (
     <div ref={containerRef} className="relative min-h-screen bg-[#0a0a0f]">
@@ -44,6 +61,11 @@ export default function HomePage() {
         {showIntro && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+            style={{ 
+              willChange: 'opacity',
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden'
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -51,8 +73,8 @@ export default function HomePage() {
           >
             {/* Particle animation background */}
             <div className="absolute inset-0 bg-[#0a0a0f]">
-              {/* Floating particles */}
-              {[...Array(100)].map((_, i) => (
+              {/* Floating particles - reduced count on mobile */}
+              {[...Array(particleCount)].map((_, i) => (
                 <motion.div
                   key={i}
                   className="absolute rounded-full"
@@ -64,6 +86,7 @@ export default function HomePage() {
                     }, transparent)`,
                     left: `${Math.random() * 100}%`,
                     top: `${Math.random() * 100}%`,
+                    willChange: 'transform, opacity'
                   }}
                   initial={{ 
                     opacity: 0,
@@ -84,7 +107,7 @@ export default function HomePage() {
                 />
               ))}
               
-              {/* Connecting lines between particles */}
+              {/* Connecting lines between particles - reduced on mobile */}
               <svg className="absolute inset-0 w-full h-full opacity-20">
                 <defs>
                   <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -92,7 +115,7 @@ export default function HomePage() {
                     <stop offset="100%" stopColor="#c084fc" stopOpacity="0.1" />
                   </linearGradient>
                 </defs>
-                {[...Array(20)].map((_, i) => (
+                {[...Array(lineCount)].map((_, i) => (
                   <motion.line
                     key={i}
                     x1={`${Math.random() * 100}%`}
@@ -116,19 +139,20 @@ export default function HomePage() {
                 ))}
               </svg>
 
-              {/* Glowing orbs */}
-              {[...Array(5)].map((_, i) => (
+              {/* Glowing orbs - reduced on mobile */}
+              {[...Array(orbCount)].map((_, i) => (
                 <motion.div
                   key={`orb-${i}`}
                   className="absolute rounded-full blur-3xl"
                   style={{
-                    width: 200 + Math.random() * 200,
-                    height: 200 + Math.random() * 200,
+                    width: isMobile ? 150 : 200 + Math.random() * 200,
+                    height: isMobile ? 150 : 200 + Math.random() * 200,
                     background: `radial-gradient(circle, ${
                       ['#818cf8', '#a78bfa', '#c084fc'][i % 3]
                     }20, transparent)`,
                     left: `${20 + i * 15}%`,
                     top: `${10 + i * 20}%`,
+                    willChange: 'transform, opacity'
                   }}
                   animate={{
                     x: [0, 50, -30, 0],
@@ -169,7 +193,7 @@ export default function HomePage() {
             >
               {/* Company name - Letter by letter reveal */}
               <motion.h1 
-                className="relative text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8"
+                className="relative text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6 sm:mb-8"
                 style={{ 
                   fontFamily: '"Playwrite NZ Basic", cursive',
                   fontOpticalSizing: 'auto',
@@ -180,7 +204,7 @@ export default function HomePage() {
                   backfaceVisibility: 'hidden'
                 }}
               >
-                <div className="mb-2">
+                <div className="mb-1 sm:mb-2">
                   {['F', 'O', 'R', 'G', 'E', 'S', 'T', 'A', 'C', 'K'].map((letter, i) => (
                     <motion.span
                       key={`first-${i}`}
@@ -192,12 +216,13 @@ export default function HomePage() {
                         ease: "easeOut"
                       }}
                       style={{ 
-                fontFamily: "'Inter', -apple-system, sans-serif",
-                background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}
+                        fontFamily: "'Inter', -apple-system, sans-serif",
+                        background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        display: 'inline-block'
+                      }}
                     >
                       {letter}
                     </motion.span>
@@ -215,12 +240,13 @@ export default function HomePage() {
                         ease: "easeOut"
                       }}
                       style={{ 
-                fontFamily: "'Inter', -apple-system, sans-serif",
-                background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}
+                        fontFamily: "'Inter', -apple-system, sans-serif",
+                        background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        display: 'inline-block'
+                      }}
                     >
                       {letter}
                     </motion.span>
@@ -230,15 +256,15 @@ export default function HomePage() {
               
               {/* Divider line that reveals */}
               <motion.div 
-                className="mx-auto h-[2px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent mb-8"
+                className="mx-auto h-[2px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent mb-6 sm:mb-8"
                 initial={{ width: 0, opacity: 0 }}
-                animate={{ width: "300px", opacity: 1 }}
+                animate={{ width: isMobile ? "200px" : "300px", opacity: 1 }}
                 transition={{ duration: 1, delay: 1.8, ease: "easeOut" }}
               />
 
               {/* Tagline - Appears after company name */}
               <motion.div
-                className="relative text-2xl md:text-4xl font-light tracking-wide"
+                className="relative text-lg sm:text-2xl md:text-4xl font-light tracking-wide px-4"
                 style={{ 
                   fontFamily: "'Inter', -apple-system, sans-serif",
                   color: '#e8e8f0'
@@ -286,7 +312,7 @@ export default function HomePage() {
               {[...Array(8)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-1.5 h-1.5 rounded-full"
+                  className="absolute w-1.5 h-1.5 rounded-full hidden sm:block"
                   style={{
                     background: `radial-gradient(circle, ${['#818cf8', '#a78bfa', '#c084fc'][i % 3]}, transparent)`,
                     left: `${50 + Math.cos((i / 8) * Math.PI * 2) * 45}%`,
@@ -309,7 +335,7 @@ export default function HomePage() {
               
               {/* Digital loading bar */}
               <motion.div 
-                className="mt-12 mx-auto max-w-xs"
+                className="mt-8 sm:mt-12 mx-auto max-w-xs"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 4 }}
@@ -342,7 +368,7 @@ export default function HomePage() {
             ].map((pos, i) => (
               <motion.div
                 key={i}
-                className="absolute w-16 h-16 border-t-2 border-l-2 border-indigo-500/50"
+                className="absolute w-12 h-12 sm:w-16 sm:h-16 border-t-2 border-l-2 border-indigo-500/50"
                 style={{
                   ...pos,
                   transform: `rotate(${pos.rotate}deg)`
@@ -381,7 +407,7 @@ export default function HomePage() {
             >
               <div className="absolute inset-0 blur-xl bg-indigo-500/20 rounded-full" />
               <p 
-                className="relative text-[10px] md:text-xs uppercase tracking-[0.5em] font-light px-6 py-2 rounded-full border border-indigo-500/30"
+                className="relative text-[10px] md:text-xs uppercase tracking-[0.3em] sm:tracking-[0.5em] font-light px-4 sm:px-6 py-2 rounded-full border border-indigo-500/30"
                 style={{ color: '#9d9db8' }}
               >
                 Founder-led technology studio
@@ -389,7 +415,7 @@ export default function HomePage() {
             </motion.div>
             
             <h1 
-              className="text-5xl md:text-7xl lg:text-8xl font-extralight tracking-[-0.03em] leading-[1.1] mb-8"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extralight tracking-[-0.03em] leading-[1.1] mb-6 sm:mb-8"
               style={{ 
                 fontFamily: "'Inter', -apple-system, sans-serif",
                 background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
@@ -411,7 +437,7 @@ export default function HomePage() {
             </h1>
             
             <motion.p 
-              className="max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed mb-12"
+              className="max-w-2xl mx-auto text-sm sm:text-base md:text-lg font-light leading-relaxed mb-8 sm:mb-12 px-4"
               style={{ color: '#9d9db8' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -429,13 +455,13 @@ export default function HomePage() {
             >
               <Link
                 href="/technology"
-                className="group inline-flex items-center gap-4 text-xs uppercase tracking-[0.4em] font-light transition-all duration-500 px-8 py-4 rounded-full border border-indigo-500/30 hover:border-indigo-400/60 hover:bg-indigo-500/10"
+                className="group inline-flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs uppercase tracking-[0.3em] sm:tracking-[0.4em] font-light transition-all duration-500 px-6 sm:px-8 py-3 sm:py-4 rounded-full border border-indigo-500/30 hover:border-indigo-400/60 hover:bg-indigo-500/10"
                 style={{ color: '#c8c8d8' }}
               >
                 <span>Explore Our Work</span>
                 <motion.span 
-                  className="w-12 h-[1px] bg-gradient-to-r from-indigo-500 to-purple-500"
-                  animate={{ width: [48, 56, 48] }}
+                  className="w-8 sm:w-12 h-[1px] bg-gradient-to-r from-indigo-500 to-purple-500"
+                  animate={{ width: isMobile ? [32, 40, 32] : [48, 56, 48] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
               </Link>
@@ -445,7 +471,7 @@ export default function HomePage() {
         
         {/* Scroll indicator */}
         <motion.div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 hidden sm:block"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
@@ -454,25 +480,25 @@ export default function HomePage() {
       </motion.section>
 
       {/* Values Section with Scroll Animations */}
-      <section className="relative py-32 px-6">
+      <section className="relative py-20 sm:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            className="text-center mb-12 sm:mb-20"
           >
             <h2 
-              className="text-3xl md:text-5xl font-extralight tracking-[-0.02em] mb-4"
+              className="text-2xl sm:text-3xl md:text-5xl font-extralight tracking-[-0.02em] mb-4"
               style={{ color: '#e8e8f0' }}
             >
               Built on Principles
             </h2>
-            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto" />
+            <div className="w-20 sm:w-24 h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto" />
           </motion.div>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
             {[
               {
                 title: "Precision",
@@ -507,15 +533,15 @@ export default function HomePage() {
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-100 transition-all duration-700 rounded-2xl blur-2xl`} />
                 
-                <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-700 rounded-2xl p-8 h-full">
+                <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-700 rounded-2xl p-6 sm:p-8 h-full">
                   <div className={`absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r ${item.borderGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
                   
-                  <div className="flex items-start gap-4 mb-6">
-                    <span className="text-3xl opacity-40 group-hover:opacity-70 transition-opacity" style={{ color: '#818cf8' }}>
+                  <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    <span className="text-2xl sm:text-3xl opacity-40 group-hover:opacity-70 transition-opacity" style={{ color: '#818cf8' }}>
                       {item.icon}
                     </span>
                     <h3 
-                      className="text-xl md:text-2xl font-light tracking-tight"
+                      className="text-lg sm:text-xl md:text-2xl font-light tracking-tight"
                       style={{ color: '#e8e8f0' }}
                     >
                       {item.title}
@@ -529,7 +555,7 @@ export default function HomePage() {
                     {item.copy}
                   </p>
                   
-                  <div className="absolute bottom-0 right-0 w-16 h-16 border-r border-b border-white/5 group-hover:border-white/10 transition-colors duration-500 rounded-br-2xl" />
+                  <div className="absolute bottom-0 right-0 w-12 sm:w-16 h-12 sm:h-16 border-r border-b border-white/5 group-hover:border-white/10 transition-colors duration-500 rounded-br-2xl" />
                 </div>
               </motion.div>
             ))}
@@ -542,9 +568,9 @@ export default function HomePage() {
 
 
 
-      {/* Floating orbs */}
+      {/* Floating orbs - reduced on mobile */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-5">
-        {[...Array(15)].map((_, i) => (
+        {[...Array(floatingOrbCount)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full"
@@ -556,6 +582,7 @@ export default function HomePage() {
               }40, transparent)`,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
+              willChange: 'transform, opacity'
             }}
             animate={{
               y: [0, Math.random() * -200 - 100, 0],
