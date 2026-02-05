@@ -37,6 +37,16 @@ export const metadata: Metadata = {
     description: "Premium software systems built with precision.",
     images: ["/og-image.png"],
   },
+  keywords: [
+    "ForgeStack Labs",
+    "Forge Stack Labs",
+    "ForgeStack",
+    "software development",
+    "custom software",
+    "technology studio",
+    "software systems",
+    "precision engineering"
+  ],
 };
 
 export default function RootLayout({
@@ -45,10 +55,45 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   
+  // Schema markup for SEO - helps search engines understand brand name variations
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "ForgeStack Labs",
+    "alternateName": ["Forge Stack Labs", "ForgeStack", "Forge Stack"],
+    "url": "https://forgestacklabs.com",
+    "logo": "https://forgestacklabs.com/logo.png",
+    "description": "ForgeStack Labs builds software systems and digital products with precision and long-term intent.",
+    "foundingDate": "2024",
+    "sameAs": []
+  };
+
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        {/* Canonical URL - tells search engines the primary URL */}
+        <link rel="canonical" href="https://forgestacklabs.com" />
+        
+        {/* Preconnect to Google Fonts for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* Load Playwrite NZ Basic font for homepage intro animation */}
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic:wght@100..400&display=swap" 
+          rel="stylesheet" 
+        />
+
+        {/* Schema.org markup for better SEO and brand recognition */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(schemaMarkup)
+          }}
+        />
+      </head>
       <body className="bg-ink text-white">
-        <ReloadRedirect/>
+        <ReloadRedirect />
         <BackgroundField />
         <div className="relative z-10 min-h-screen flex flex-col">
           <Navigation />
