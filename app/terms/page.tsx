@@ -1,10 +1,26 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, ReactNode } from "react";
+
+interface SectionTitleProps {
+  children: string;
+  number: string | number;
+  delay?: number;
+}
+
+interface SubsectionProps {
+  title?: string;
+  children: ReactNode;
+  delay?: number;
+}
+
+interface BulletListProps {
+  items: string[];
+}
 
 export default function TermsOfServicePage() {
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -12,39 +28,41 @@ export default function TermsOfServicePage() {
 
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
 
-  const SectionTitle = ({ children, delay = 0 }: { children: string; delay?: number }) => (
+  const SectionTitle = ({ children, number, delay = 0 }: SectionTitleProps) => (
     <motion.h2
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8, delay }}
-      className="text-2xl md:text-4xl font-light tracking-tight mb-6"
+      className="text-xl md:text-3xl font-light tracking-tight mb-6 mt-12"
       style={{
-        fontFamily: "'Inter', -apple-system, sans-serif",
+        fontFamily: "'Space Grotesk', 'Inter', -apple-system, sans-serif",
         background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text'
       }}
     >
-      {children}
+      {number}. {children}
     </motion.h2>
   );
 
-  const Subsection = ({ title, children, delay = 0 }: { title: string; children: React.ReactNode; delay?: number }) => (
+  const Subsection = ({ title, children, delay = 0 }: SubsectionProps) => (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay }}
-      className="mb-8"
+      className="mb-6"
     >
-      <h3 
-        className="text-lg md:text-xl font-light mb-3"
-        style={{ color: '#e8e8f0' }}
-      >
-        {title}
-      </h3>
+      {title && (
+        <h3 
+          className="text-base md:text-lg font-medium mb-3"
+          style={{ color: '#e8e8f0' }}
+        >
+          {title}
+        </h3>
+      )}
       <div 
         className="text-sm md:text-base font-light leading-relaxed space-y-3"
         style={{ color: '#9d9db8' }}
@@ -52,6 +70,17 @@ export default function TermsOfServicePage() {
         {children}
       </div>
     </motion.div>
+  );
+
+  const BulletList = ({ items }: BulletListProps) => (
+    <ul className="space-y-2 ml-4 mt-3">
+      {items.map((item, idx) => (
+        <li key={idx} className="flex items-start gap-2">
+          <span className="text-indigo-400 mt-1">•</span>
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
   );
 
   return (
@@ -136,22 +165,22 @@ export default function TermsOfServicePage() {
       {/* Hero Section */}
       <motion.section 
         style={{ opacity }}
-        className="relative pt-32 pb-20 px-6"
+        className="relative pt-24 md:pt-32 pb-16 md:pb-20 px-4 md:px-6"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2 }}
-            className="text-center mb-16"
+            className="text-center mb-12 md:mb-16"
           >
             <motion.div 
-              className="inline-block relative mb-6"
+              className="inline-block relative mb-4 md:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               <div className="absolute inset-0 blur-xl bg-indigo-500/20 rounded-full" />
               <p 
-                className="relative text-[10px] md:text-xs uppercase tracking-[0.5em] font-light px-6 py-2 rounded-full border border-indigo-500/30"
+                className="relative text-[9px] md:text-xs uppercase tracking-[0.3em] md:tracking-[0.5em] font-light px-4 md:px-6 py-1.5 md:py-2 rounded-full border border-indigo-500/30"
                 style={{ color: '#9d9db8' }}
               >
                 Legal Information
@@ -159,9 +188,9 @@ export default function TermsOfServicePage() {
             </motion.div>
             
             <h1 
-              className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-[-0.03em] leading-[1.1] mb-6"
+              className="text-3xl md:text-5xl lg:text-7xl font-extralight tracking-[-0.03em] leading-[1.1] mb-4 md:mb-6 px-4"
               style={{ 
-                fontFamily: "'Inter', -apple-system, sans-serif",
+                fontFamily: "'Space Grotesk', 'Inter', -apple-system, sans-serif",
                 background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
@@ -182,93 +211,246 @@ export default function TermsOfServicePage() {
       </motion.section>
 
       {/* Terms of Service Content */}
-      <section className="relative py-16 px-6 pb-32">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative py-8 md:py-16 px-4 md:px-6 pb-24 md:pb-32">
+        <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] rounded-2xl p-8 md:p-12"
+            className="backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] rounded-xl md:rounded-2xl p-6 md:p-12"
           >
             <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-sm font-light mb-8"
+              className="text-xs md:text-sm font-light mb-8"
               style={{ color: '#9d9db8' }}
             >
-              Last updated: Feb 2026
+              Last Updated: February 5, 2026
             </motion.p>
 
-            <Subsection title="1. Agreement to Terms" delay={0.1}>
+            {/* Section 1: Introduction */}
+            <SectionTitle number={1} delay={0.1}>Introduction</SectionTitle>
+            <Subsection delay={0.15}>
               <p>
-                By accessing and using the Forgestack Labs LLP website, you agree to be bound by these 
-                Terms of Service and all applicable laws and regulations. If you do not agree with any of 
-                these terms, you are prohibited from using this site.
+                Welcome to Forgestack Labs LLP (&quot;Company&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;). These Terms of Service 
+                (&quot;Terms&quot;) govern your access to and use of:
+              </p>
+              <BulletList items={[
+                "Our website",
+                "Our software products and platforms (\"Products\" or \"SaaS Products\")",
+                "Our engineering, consulting, and development services (\"Services\")"
+              ]} />
+              <p className="mt-3">
+                By accessing or using our website, Products, or Services, you agree to be bound by these 
+                Terms and our Privacy Policy.
+              </p>
+              <p className="mt-3 font-medium" style={{ color: '#e8e8f0' }}>
+                If you do not agree, you must immediately discontinue use of our website, Products, and Services.
               </p>
             </Subsection>
 
-            <Subsection title="2. Services" delay={0.15}>
+            {/* Section 2: Relationship with Other Agreements */}
+            <SectionTitle number={2} delay={0.2}>Relationship with Other Agreements</SectionTitle>
+            <Subsection delay={0.25}>
               <p>
-                Forgestack Labs LLP provides product strategy, design, and engineering services. Specific 
-                terms for individual projects will be outlined in separate service agreements or contracts.
+                If you have executed a Master Service Agreement (&quot;MSA&quot;), Statement of Work (&quot;SOW&quot;), 
+                Subscription Order, or Data Processing Addendum (&quot;DPA&quot;) with Forgestack Labs LLP:
+              </p>
+              <BulletList items={[
+                "Those documents shall govern your relationship with us.",
+                "In the event of any conflict, the order of precedence shall be: MSA → DPA → SOW / Subscription Order → These Terms."
+              ]} />
+              <p className="mt-3">
+                These Terms primarily govern website access and self-service SaaS usage where no separate 
+                MSA is executed.
               </p>
             </Subsection>
 
-            <Subsection title="3. Intellectual Property" delay={0.2}>
+            {/* Section 3: Definitions */}
+            <SectionTitle number={3} delay={0.3}>Definitions</SectionTitle>
+            <Subsection delay={0.35}>
+              <div className="space-y-3">
+                <p>
+                  <span className="font-medium" style={{ color: '#e8e8f0' }}>&quot;Client&quot;</span> means any 
+                  individual or entity engaging Forgestack Labs LLP for Services under an MSA or SOW.
+                </p>
+                <p>
+                  <span className="font-medium" style={{ color: '#e8e8f0' }}>&quot;User&quot;</span> means any 
+                  individual accessing the website or using the SaaS Products.
+                </p>
+                <p>
+                  <span className="font-medium" style={{ color: '#e8e8f0' }}>&quot;Deliverables&quot;</span> means 
+                  specific outputs created for a Client under a Service engagement.
+                </p>
+                <p>
+                  <span className="font-medium" style={{ color: '#e8e8f0' }}>&quot;SaaS Product&quot;</span> means 
+                  Forgestack Labs&apos; proprietary subscription-based software, including the Fuel Station 
+                  Management System.
+                </p>
+              </div>
+            </Subsection>
+
+            {/* Section 4: Use of Products & Services */}
+            <SectionTitle number={4} delay={0.4}>Use of Products & Services</SectionTitle>
+            
+            <Subsection title="4.1 Eligibility" delay={0.42}>
               <p>
-                The content on this website, including but not limited to text, graphics, logos, and images, 
-                is the property of Forgestack Labs LLP and is protected by applicable intellectual property laws.
+                You must be at least 18 years of age and legally capable of entering into a binding 
+                contract under Indian law.
+              </p>
+            </Subsection>
+
+            <Subsection title="4.2 Account Security" delay={0.44}>
+              <p>
+                You are responsible for maintaining the confidentiality of your login credentials and for 
+                all activities conducted through your account. You must notify us immediately of any 
+                unauthorized access.
+              </p>
+            </Subsection>
+
+            <Subsection title="4.3 Prohibited Conduct" delay={0.46}>
+              <p>You agree not to:</p>
+              <BulletList items={[
+                "Reverse engineer, decompile, or attempt to extract source code from the SaaS Products",
+                "Use the Products or Services for unlawful purposes",
+                "Interfere with platform security or performance",
+                "Resell, sublicense, or commercially exploit the SaaS Products without written authorization"
+              ]} />
+            </Subsection>
+
+            {/* Section 5: Client Services */}
+            <SectionTitle number={5} delay={0.5}>Client Services (Custom Development & Consulting)</SectionTitle>
+            
+            <Subsection title="5.1 Scope of Work" delay={0.52}>
+              <p>
+                All Client engagements are governed by a separate MSA and/or SOW, which define scope, 
+                timelines, pricing, and deliverables.
+              </p>
+            </Subsection>
+
+            <Subsection title="5.2 Intellectual Property – Client Work" delay={0.54}>
+              <p>Unless otherwise stated in writing:</p>
+              <BulletList items={[
+                "Upon full payment, the Client owns the specific Deliverables created for them.",
+                "Forgestack Labs LLP retains ownership of all Background IP, including tools, libraries, frameworks, and pre-existing code.",
+                "The Client is granted a perpetual, non-exclusive license to use such Background IP solely as embedded within the Deliverables."
+              ]} />
+            </Subsection>
+
+            {/* Section 6: SaaS Products */}
+            <SectionTitle number={6} delay={0.6}>SaaS Products (Subscription Use)</SectionTitle>
+            
+            <Subsection title="6.1 License Grant" delay={0.62}>
+              <p>
+                We grant you a limited, non-exclusive, non-transferable, revocable license to use the 
+                SaaS Products solely for internal business purposes.
+              </p>
+            </Subsection>
+
+            <Subsection title="6.2 Data Ownership & Processing" delay={0.64}>
+              <p>
+                You retain ownership of all data you upload or generate within the SaaS Products 
+                (&quot;Customer Data&quot;).
               </p>
               <p className="mt-3">
-                Client projects and deliverables are subject to separate intellectual property terms as 
-                defined in individual project agreements.
+                You grant Forgestack Labs LLP the right to process Customer Data solely to provide and 
+                maintain the Services.
+              </p>
+              <p className="mt-3">
+                Data processing obligations are governed by our DPA and Privacy Policy.
               </p>
             </Subsection>
 
-            <Subsection title="4. User Submissions" delay={0.25}>
+            {/* Section 7: Fees & Payments */}
+            <SectionTitle number={7} delay={0.7}>Fees & Payments</SectionTitle>
+            <Subsection delay={0.72}>
               <p>
-                When you submit information through our contact form, you grant Forgestack Labs LLP the 
-                right to use this information to respond to your inquiry and provide our services. We will 
-                handle your information in accordance with our Privacy Policy.
+                <span className="font-medium" style={{ color: '#e8e8f0' }}>Client Services:</span> Fees 
+                are payable as specified in the applicable SOW. Late payments may attract interest.
+              </p>
+              <p className="mt-3">
+                <span className="font-medium" style={{ color: '#e8e8f0' }}>SaaS Subscriptions:</span> Fees 
+                are billed in advance (monthly or annually). Non-payment may result in suspension or 
+                termination.
+              </p>
+              <p className="mt-3">
+                All fees are exclusive of applicable taxes, including GST.
               </p>
             </Subsection>
 
-            <Subsection title="5. Disclaimer" delay={0.3}>
+            {/* Section 8: Confidentiality */}
+            <SectionTitle number={8} delay={0.75}>Confidentiality</SectionTitle>
+            <Subsection delay={0.77}>
               <p>
-                The information on this website is provided &quot;as is&quot; without any warranties, express or 
-                implied. Forgestack Labs LLP does not warrant that the website will be error-free or 
-                uninterrupted.
+                Each party agrees to maintain the confidentiality of non-public business, technical, or 
+                commercial information disclosed in connection with the Products or Services, except where 
+                disclosure is required by law.
               </p>
             </Subsection>
 
-            <Subsection title="6. Limitation of Liability" delay={0.35}>
+            {/* Section 9: Warranties & Disclaimers */}
+            <SectionTitle number={9} delay={0.8}>Warranties & Disclaimers</SectionTitle>
+            <Subsection delay={0.82}>
+              <BulletList items={[
+                "SaaS Products are provided on an \"AS IS\" and \"AS AVAILABLE\" basis.",
+                "We do not warrant uninterrupted or error-free operation.",
+                "No warranties are provided except as expressly stated in writing."
+              ]} />
+            </Subsection>
+
+            {/* Section 10: Limitation of Liability */}
+            <SectionTitle number={10} delay={0.85}>Limitation of Liability</SectionTitle>
+            <Subsection delay={0.87}>
+              <p>To the maximum extent permitted under Indian law:</p>
+              <BulletList items={[
+                "Forgestack Labs LLP shall not be liable for indirect, incidental, special, or consequential damages, including loss of data, revenue, or profits.",
+                "Our total aggregate liability arising from these Terms shall not exceed the fees paid by you in the three (3) months preceding the claim.",
+                "Liability terms under an executed MSA shall prevail where applicable."
+              ]} />
+            </Subsection>
+
+            {/* Section 11: Termination */}
+            <SectionTitle number={11} delay={0.9}>Termination</SectionTitle>
+            <Subsection delay={0.92}>
               <p>
-                Forgestack Labs LLP shall not be liable for any indirect, incidental, special, or 
-                consequential damages arising out of or in connection with the use of this website.
+                <span className="font-medium" style={{ color: '#e8e8f0' }}>By You:</span> You may 
+                discontinue use of the Products at any time. Subscription cancellations take effect at the 
+                end of the billing cycle.
+              </p>
+              <p className="mt-3">
+                <span className="font-medium" style={{ color: '#e8e8f0' }}>By Us:</span> We may suspend 
+                or terminate access for breach, non-payment, or misuse.
+              </p>
+              <p className="mt-3">
+                Termination does not affect accrued payment obligations.
               </p>
             </Subsection>
 
-            <Subsection title="7. Governing Law" delay={0.4}>
+            {/* Section 12: Privacy & Data Protection */}
+            <SectionTitle number={12} delay={0.95}>Privacy & Data Protection</SectionTitle>
+            <Subsection delay={0.97}>
               <p>
-                These terms shall be governed by and construed in accordance with the laws of India. 
-                Any disputes arising from these terms will be subject to the exclusive jurisdiction of 
-                the courts in India.
+                Your use of the Products and Services is subject to our Privacy Policy and, where 
+                applicable, our Data Processing Addendum.
               </p>
             </Subsection>
 
-            <Subsection title="8. Changes to Terms" delay={0.45}>
+            {/* Section 13: Governing Law & Jurisdiction */}
+            <SectionTitle number={13} delay={1.0}>Governing Law & Jurisdiction</SectionTitle>
+            <Subsection delay={1.02}>
               <p>
-                We reserve the right to modify these terms at any time. Changes will be effective 
-                immediately upon posting to this website. Your continued use of the website constitutes 
-                acceptance of the modified terms.
+                These Terms are governed by the laws of India. Courts located in [Insert City, State, India] 
+                shall have exclusive jurisdiction.
               </p>
             </Subsection>
 
-            <Subsection title="9. Contact" delay={0.5}>
-              <p>For questions about these Terms of Service, please contact us at:</p>
+            {/* Section 14: Contact Information */}
+            <SectionTitle number={14} delay={1.05}>Contact Information</SectionTitle>
+            <Subsection delay={1.07}>
+              <p className="font-medium" style={{ color: '#e8e8f0' }}>Forgestack Labs LLP</p>
               <motion.a
                 href="mailto:forgestacklabs@forgestacklabs.com"
                 className="inline-block mt-2 hover:opacity-70 transition-opacity"
@@ -280,7 +462,7 @@ export default function TermsOfServicePage() {
                   backgroundClip: 'text'
                 }}
               >
-                forgestacklabs@forgestacklabs.com
+                Email: forgestacklabs@forgestacklabs.com
               </motion.a>
             </Subsection>
           </motion.div>
