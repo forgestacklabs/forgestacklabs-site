@@ -1,31 +1,45 @@
 "use client";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export default function AboutPage() {
   const containerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
+  // Detect screen size
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Adjust animation values based on screen size
+  const opacityRange = isMobile ? [0, 0.5] : [0, 0.3];
+  const scaleRange = isMobile ? [1, 0.98] : [1, 0.95];
+  
+  const opacity = useTransform(scrollYProgress, opacityRange, [1, 0]);
+  const scale = useTransform(scrollYProgress, opacityRange, [1, scaleRange[1]]);
 
   return (
     <div ref={containerRef} className="relative min-h-screen bg-[#0a0a0f]">
       {/* Enhanced Philosophy Section - Matching Home Page Style */}
       <motion.section 
         style={{ opacity, scale }}
-        className="relative py-32 px-6"
+        className="relative py-20 md:py-32 px-6"
       >
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            viewport={{ once: true, margin: isMobile ? "-50px" : "-100px", amount: isMobile ? 0.1 : 0.3 }}
+            transition={{ duration: isMobile ? 0.5 : 0.8 }}
+            className="text-center mb-12 md:mb-20"
           >
             <motion.div 
               className="inline-block mb-6"
@@ -40,11 +54,11 @@ export default function AboutPage() {
             </motion.div>
             
             <motion.h2 
-              className="text-3xl md:text-5xl lg:text-6xl font-extralight tracking-[-0.02em] leading-[1.1] mb-6"
+              className="text-2xl md:text-5xl lg:text-6xl font-extralight tracking-[-0.02em] leading-[1.1] mb-6"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true, amount: isMobile ? 0.1 : 0.3 }}
+              transition={{ duration: isMobile ? 0.5 : 0.8, delay: isMobile ? 0.1 : 0.2 }}
               style={{ 
                 fontFamily: "'Inter', -apple-system, sans-serif",
                 background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
@@ -76,18 +90,18 @@ export default function AboutPage() {
             </motion.h2>
             
             <motion.p 
-              className="max-w-2xl mx-auto text-base md:text-lg font-light leading-relaxed"
+              className="max-w-2xl mx-auto text-sm md:text-base lg:text-lg font-light leading-relaxed"
               style={{ color: '#9d9db8' }}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.8 }}
+              viewport={{ once: true, amount: isMobile ? 0.1 : 0.3 }}
+              transition={{ delay: isMobile ? 0.2 : 0.4, duration: isMobile ? 0.5 : 0.8 }}
             >
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.6 }}
+                viewport={{ once: true, amount: isMobile ? 0.1 : 0.3 }}
+                transition={{ delay: isMobile ? 0.3 : 0.5, duration: isMobile ? 0.4 : 0.6 }}
                 style={{ display: 'inline-block' }}
               >
                 FORGESTACK LABS
@@ -96,8 +110,8 @@ export default function AboutPage() {
               <motion.span
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.7, duration: 0.6 }}
+                viewport={{ once: true, amount: isMobile ? 0.1 : 0.3 }}
+                transition={{ delay: isMobile ? 0.4 : 0.7, duration: isMobile ? 0.4 : 0.6 }}
               >
                 exists to build quietly and with intention. We are product-first,
                 focused on systems that hold up under time and complexity. The work is deliberate,
@@ -137,19 +151,19 @@ export default function AboutPage() {
                 key={value.title}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.7, delay: index * 0.15 }}
+                viewport={{ once: true, margin: isMobile ? "-30px" : "-50px", amount: isMobile ? 0.1 : 0.3 }}
+                transition={{ duration: isMobile ? 0.5 : 0.7, delay: index * (isMobile ? 0.1 : 0.15) }}
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
                 className="group relative"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${value.gradient} opacity-0 group-hover:opacity-100 transition-all duration-700 rounded-2xl blur-2xl`} />
                 
-                <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-700 rounded-2xl p-8 h-full">
+                <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-700 rounded-2xl p-6 md:p-8 h-full">
                   <div className={`absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r ${value.borderGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
                   
-                  <div className="flex items-start gap-4 mb-6">
+                  <div className="flex items-start gap-4 mb-4 md:mb-6">
                     <motion.span 
-                      className="text-3xl opacity-40 group-hover:opacity-70 transition-opacity" 
+                      className="text-2xl md:text-3xl opacity-40 group-hover:opacity-70 transition-opacity" 
                       style={{ color: value.accentColor }}
                       animate={{
                         scale: [1, 1.1, 1],
@@ -164,7 +178,7 @@ export default function AboutPage() {
                       {value.icon}
                     </motion.span>
                     <motion.h3 
-                      className="text-xl md:text-2xl font-light tracking-tight"
+                      className="text-lg md:text-xl lg:text-2xl font-light tracking-tight"
                       style={{ 
                         color: '#e8e8f0',
                         background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
@@ -178,7 +192,7 @@ export default function AboutPage() {
                   </div>
                   
                   <p 
-                    className="text-sm md:text-base font-light leading-relaxed"
+                    className="text-xs md:text-sm lg:text-base font-light leading-relaxed"
                     style={{ color: '#9d9db8' }}
                   >
                     {value.description}
@@ -191,9 +205,9 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator - hidden on mobile */}
         <motion.div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
+          className="hidden md:block absolute bottom-12 left-1/2 -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
@@ -203,7 +217,7 @@ export default function AboutPage() {
 
       {/* Floating particles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-5">
-        {[...Array(15)].map((_, i) => (
+        {[...Array(isMobile ? 8 : 15)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full"
@@ -230,6 +244,7 @@ export default function AboutPage() {
           />
         ))}
       </div>
+      
       {/* Background elements */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-indigo-900/20 via-transparent to-transparent" />
@@ -246,22 +261,22 @@ export default function AboutPage() {
         </svg>
       </div>
 
-      <section className="relative py-32 px-6">
+      <section className="relative py-20 md:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            viewport={{ once: true, margin: isMobile ? "-50px" : "-100px", amount: isMobile ? 0.1 : 0.3 }}
+            transition={{ duration: isMobile ? 0.5 : 0.8 }}
+            className="text-center mb-12 md:mb-20"
           >
             <motion.h2 
-              className="text-3xl md:text-5xl font-extralight tracking-[-0.02em] mb-4"
+              className="text-2xl md:text-3xl lg:text-5xl font-extralight tracking-[-0.02em] mb-4"
               style={{ color: '#e8e8f0' }}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true, amount: isMobile ? 0.1 : 0.3 }}
+              transition={{ duration: isMobile ? 0.5 : 0.8, delay: isMobile ? 0.1 : 0.2 }}
             >
               About Forgestack Labs LLP
             </motion.h2>
@@ -269,64 +284,64 @@ export default function AboutPage() {
               className="w-24 h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto"
               initial={{ width: 0, opacity: 0 }}
               whileInView={{ width: 96, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true, amount: isMobile ? 0.1 : 0.3 }}
+              transition={{ duration: isMobile ? 0.5 : 0.8, delay: isMobile ? 0.2 : 0.4 }}
             />
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl mx-auto mb-20"
+            viewport={{ once: true, margin: isMobile ? "-30px" : "-50px", amount: isMobile ? 0.1 : 0.3 }}
+            transition={{ duration: isMobile ? 0.5 : 0.8 }}
+            className="max-w-3xl mx-auto mb-12 md:mb-20"
           >
             <motion.div 
-              className="backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] rounded-2xl p-8 md:p-12"
+              className="backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] rounded-2xl p-6 md:p-8 lg:p-12"
               whileHover={{ 
                 borderColor: 'rgba(255, 255, 255, 0.12)',
                 transition: { duration: 0.3 }
               }}
             >
-              <div className="space-y-6 text-center">
+              <div className="space-y-4 md:space-y-6 text-center">
                 <motion.p 
-                  className="text-sm md:text-base font-light" 
+                  className="text-xs md:text-sm lg:text-base font-light" 
                   style={{ color: '#9d9db8' }}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{ delay: 0.1 }}
                 >
                   Incorporated On: <span style={{ color: '#e8e8f0' }}>14 January 2026</span>
                 </motion.p>
                 <motion.p 
-                  className="text-sm md:text-base font-light" 
+                  className="text-xs md:text-sm lg:text-base font-light" 
                   style={{ color: '#9d9db8' }}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{ delay: 0.2 }}
                 >
                   Company Type: <span style={{ color: '#e8e8f0' }}>Limited Liability Partnership (LLP)</span>
                 </motion.p>
                 <motion.div 
-                  className="pt-4"
+                  className="pt-2 md:pt-4"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{ delay: 0.3 }}
                 >
-                  <p className="text-sm font-light mb-3" style={{ color: '#9d9db8' }}>Founders:</p>
-                  <div className="flex flex-wrap justify-center gap-4">
+                  <p className="text-xs font-light mb-3" style={{ color: '#9d9db8' }}>Founders:</p>
+                  <div className="flex flex-wrap justify-center gap-3 md:gap-4">
                     {['Sriharsha', 'Pulavarson', 'Hardhik'].map((founder, i) => (
                       <motion.span 
                         key={founder}
-                        className="px-4 py-2 rounded-full border border-indigo-500/30 text-sm font-light"
+                        className="px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-indigo-500/30 text-xs md:text-sm font-light"
                         style={{ color: '#e8e8f0' }}
                         initial={{ opacity: 0, scale: 0.8 }}
                         whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.5 + i * 0.1 }}
+                        viewport={{ once: true, amount: 0.5 }}
+                        transition={{ delay: 0.4 + i * 0.1 }}
                         whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                       >
                         {founder}
@@ -341,30 +356,30 @@ export default function AboutPage() {
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            viewport={{ once: true, margin: isMobile ? "-50px" : "-100px", amount: isMobile ? 0.1 : 0.3 }}
+            transition={{ duration: isMobile ? 0.5 : 0.8 }}
+            className="text-center mb-12 md:mb-16"
           >
             <motion.h3 
-              className="text-2xl md:text-4xl font-extralight tracking-[-0.02em] mb-4"
+              className="text-xl md:text-2xl lg:text-4xl font-extralight tracking-[-0.02em] mb-4"
               style={{ color: '#e8e8f0' }}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true, amount: isMobile ? 0.1 : 0.3 }}
+              transition={{ duration: isMobile ? 0.5 : 0.8, delay: isMobile ? 0.1 : 0.2 }}
             >
               Leadership & Team
             </motion.h3>
             <motion.div 
-              className="w-20 h-[1px] bg-gradient-to-r from-transparent via-purple-500 to-transparent mx-auto"
+              className="w-16 md:w-20 h-[1px] bg-gradient-to-r from-transparent via-purple-500 to-transparent mx-auto"
               initial={{ width: 0, opacity: 0 }}
-              whileInView={{ width: 80, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              whileInView={{ width: isMobile ? 64 : 80, opacity: 1 }}
+              viewport={{ once: true, amount: isMobile ? 0.1 : 0.3 }}
+              transition={{ duration: isMobile ? 0.5 : 0.8, delay: isMobile ? 0.2 : 0.4 }}
             />
           </motion.div>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-6 md:gap-8 md:grid-cols-3">
             {[
               {
                 title: "Chief Executive Officer",
@@ -430,38 +445,38 @@ export default function AboutPage() {
                 key={leader.name}
                 initial={{ opacity: 0, y: 60 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
+                viewport={{ once: true, margin: isMobile ? "-30px" : "-50px", amount: isMobile ? 0.05 : 0.2 }}
+                transition={{ duration: isMobile ? 0.5 : 0.8, delay: index * (isMobile ? 0.1 : 0.2) }}
                 whileHover={{ y: -8, transition: { duration: 0.3 } }}
                 className="group relative"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${leader.gradient} opacity-0 group-hover:opacity-100 transition-all duration-700 rounded-2xl blur-2xl`} />
                 
-                <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-700 rounded-2xl p-8 h-full">
+                <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-700 rounded-2xl p-6 md:p-8 h-full">
                   <div className={`absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r ${leader.borderGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
                   
-                  <div className="mb-6">
-                    <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#9d9db8' }}>
+                  <div className="mb-4 md:mb-6">
+                    <p className="text-[10px] md:text-xs uppercase tracking-wider mb-2" style={{ color: '#9d9db8' }}>
                       {leader.title}
                     </p>
                     <h3 
-                      className="text-2xl md:text-3xl font-light tracking-tight"
+                      className="text-xl md:text-2xl lg:text-3xl font-light tracking-tight"
                       style={{ color: '#e8e8f0' }}
                     >
                       {leader.name}
                     </h3>
                   </div>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-4 md:space-y-6">
                     <div>
-                      <p className="text-xs uppercase tracking-wider mb-3" style={{ color: '#818cf8' }}>
+                      <p className="text-[10px] md:text-xs uppercase tracking-wider mb-2 md:mb-3" style={{ color: '#818cf8' }}>
                         Education
                       </p>
-                      <div className="space-y-2">
+                      <div className="space-y-1.5 md:space-y-2">
                         {leader.education.map((item, i) => (
                           <p 
                             key={i}
-                            className="text-sm font-light leading-relaxed"
+                            className="text-xs md:text-sm font-light leading-relaxed"
                             style={{ color: '#9d9db8' }}
                           >
                             {item}
@@ -471,14 +486,14 @@ export default function AboutPage() {
                     </div>
                     
                     <div>
-                      <p className="text-xs uppercase tracking-wider mb-3" style={{ color: '#818cf8' }}>
+                      <p className="text-[10px] md:text-xs uppercase tracking-wider mb-2 md:mb-3" style={{ color: '#818cf8' }}>
                         Experience
                       </p>
-                      <div className="space-y-2">
+                      <div className="space-y-1.5 md:space-y-2">
                         {leader.experience.map((item, i) => (
                           <p 
                             key={i}
-                            className="text-sm font-light leading-relaxed"
+                            className="text-xs md:text-sm font-light leading-relaxed"
                             style={{ color: '#9d9db8' }}
                           >
                             {item}
@@ -489,14 +504,14 @@ export default function AboutPage() {
                     
                     {leader.skills && (
                       <div>
-                        <p className="text-xs uppercase tracking-wider mb-3" style={{ color: '#818cf8' }}>
+                        <p className="text-[10px] md:text-xs uppercase tracking-wider mb-2 md:mb-3" style={{ color: '#818cf8' }}>
                           Technical Skills
                         </p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-1.5 md:gap-2">
                           {leader.skills.map((skill, i) => (
                             <span 
                               key={i}
-                              className="px-3 py-1 rounded-full border border-indigo-500/20 text-xs font-light"
+                              className="px-2 md:px-3 py-0.5 md:py-1 rounded-full border border-indigo-500/20 text-[10px] md:text-xs font-light"
                               style={{ color: '#c8c8d8' }}
                             >
                               {skill}
@@ -508,14 +523,14 @@ export default function AboutPage() {
                     
                     {leader.tools && (
                       <div>
-                        <p className="text-xs uppercase tracking-wider mb-3" style={{ color: '#818cf8' }}>
+                        <p className="text-[10px] md:text-xs uppercase tracking-wider mb-2 md:mb-3" style={{ color: '#818cf8' }}>
                           Tools
                         </p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-1.5 md:gap-2">
                           {leader.tools.map((tool, i) => (
                             <span 
                               key={i}
-                              className="px-3 py-1 rounded-full border border-indigo-500/20 text-xs font-light"
+                              className="px-2 md:px-3 py-0.5 md:py-1 rounded-full border border-indigo-500/20 text-[10px] md:text-xs font-light"
                               style={{ color: '#c8c8d8' }}
                             >
                               {tool}
@@ -526,7 +541,7 @@ export default function AboutPage() {
                     )}
                   </div>
                   
-                  <div className="absolute bottom-0 right-0 w-16 h-16 border-r border-b border-white/5 group-hover:border-white/10 transition-colors duration-500 rounded-br-2xl" />
+                  <div className="absolute bottom-0 right-0 w-12 h-12 md:w-16 md:h-16 border-r border-b border-white/5 group-hover:border-white/10 transition-colors duration-500 rounded-br-2xl" />
                 </div>
               </motion.div>
             ))}

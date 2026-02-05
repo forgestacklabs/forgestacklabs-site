@@ -1,12 +1,10 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { SiPostman, SiInsomnia } from "react-icons/si";
 import type { IconType } from "react-icons";
 import { FaJava } from "react-icons/fa";
-
-
 
 // Type definitions
 interface HexagonTechProps {
@@ -17,18 +15,30 @@ interface HexagonTechProps {
   };
   index: number;
   delay: number;
+  isMobile: boolean;
 }
 
 export default function TechnologyPage() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
 
-  // Fixed: Content stays at full opacity longer, then fades out more gradually
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.5], [1, 1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.98]);
+  // Detect screen size
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Responsive scroll animations
+  const opacityRange = isMobile ? [0, 0.3, 0.6] : [0, 0.2, 0.5];
+  const opacity = useTransform(scrollYProgress, opacityRange, [1, 1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, isMobile ? 0.99 : 0.98]);
 
   return (
     <div ref={containerRef} className="relative min-h-screen bg-[#0a0a0f]">
@@ -52,24 +62,24 @@ export default function TechnologyPage() {
 
       <motion.section
         style={{ opacity, scale }}
-        className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 py-20 md:py-28 relative"
+        className="mx-auto flex w-full max-w-5xl flex-col gap-8 md:gap-10 px-6 py-16 md:py-20 lg:py-28 relative"
       >
         {/* Header Section */}
         <motion.div
           className="max-w-3xl"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
+          transition={{ duration: isMobile ? 0.7 : 1, delay: isMobile ? 0.1 : 0.2 }}
         >
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative inline-block mb-6"
+            transition={{ duration: isMobile ? 0.6 : 0.8, delay: isMobile ? 0.2 : 0.3 }}
+            className="relative inline-block mb-4 md:mb-6"
           >
             <div className="absolute inset-0 blur-xl bg-indigo-500/20 rounded-full" />
             <p
-              className="relative text-[10px] md:text-xs uppercase tracking-[0.5em] font-light px-6 py-2 rounded-full border border-indigo-500/30"
+              className="relative text-[10px] md:text-xs uppercase tracking-[0.5em] font-light px-4 md:px-6 py-1.5 md:py-2 rounded-full border border-indigo-500/30"
               style={{ color: '#9d9db8' }}
             >
               Technology
@@ -77,10 +87,10 @@ export default function TechnologyPage() {
           </motion.div>
 
           <motion.h1
-            className="text-4xl md:text-6xl font-extralight tracking-[-0.03em] leading-tight mb-8"
+            className="text-3xl md:text-5xl lg:text-6xl font-extralight tracking-[-0.03em] leading-tight mb-6 md:mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.4 }}
+            transition={{ duration: isMobile ? 0.7 : 1, delay: isMobile ? 0.3 : 0.4 }}
             style={{
               fontFamily: "'Inter', -apple-system, sans-serif"
             }}
@@ -107,19 +117,19 @@ export default function TechnologyPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 }}
+            transition={{ duration: isMobile ? 0.7 : 1, delay: isMobile ? 0.4 : 0.6 }}
           >
-            <div className="w-32 h-[1px] bg-gradient-to-r from-indigo-500 to-transparent mb-6" />
+            <div className="w-24 md:w-32 h-[1px] bg-gradient-to-r from-indigo-500 to-transparent mb-4 md:mb-6" />
 
             <p
-              className="text-base md:text-lg font-light leading-relaxed mb-6"
+              className="text-sm md:text-base lg:text-lg font-light leading-relaxed mb-4 md:mb-6"
               style={{ color: '#9d9db8' }}
             >
               Technology should serve clear objectives. At <span style={{ color: '#e8e8f0' }}>FORGESTACK LABS</span>, every technical decision is made with intention—choosing the right tools, designing resilient systems, and maintaining focus on what truly matters.
             </p>
 
             <p
-              className="text-base md:text-lg font-light leading-relaxed"
+              className="text-sm md:text-base lg:text-lg font-light leading-relaxed"
               style={{ color: '#9d9db8' }}
             >
               The approach emphasizes reliability over novelty, simplicity over complexity, and long-term thinking over short-term gains.
@@ -127,9 +137,9 @@ export default function TechnologyPage() {
           </motion.div>
         </motion.div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator - hidden on mobile */}
         <motion.div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
+          className="hidden md:block absolute bottom-12 left-1/2 -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
@@ -138,11 +148,11 @@ export default function TechnologyPage() {
 
         {/* Engineering Principles Grid */}
         <motion.div
-          className="grid gap-6 md:grid-cols-2"
+          className="grid gap-4 md:gap-6 md:grid-cols-2"
           initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1, delay: 0.2 }}
+          viewport={{ once: true, margin: isMobile ? "-50px" : "-100px", amount: isMobile ? 0.1 : 0.3 }}
+          transition={{ duration: isMobile ? 0.7 : 1, delay: isMobile ? 0.1 : 0.2 }}
         >
           {[
             {
@@ -182,8 +192,8 @@ export default function TechnologyPage() {
               key={item.title}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.8, delay: index * 0.15 }}
+              viewport={{ once: true, margin: isMobile ? "-30px" : "-50px", amount: isMobile ? 0.1 : 0.3 }}
+              transition={{ duration: isMobile ? 0.6 : 0.8, delay: index * (isMobile ? 0.1 : 0.15) }}
               whileHover={{
                 y: -8,
                 transition: { duration: 0.3 }
@@ -194,15 +204,15 @@ export default function TechnologyPage() {
               <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-100 transition-all duration-700 rounded-2xl blur-2xl`} />
 
               {/* Card */}
-              <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-700 rounded-2xl p-8 h-full">
+              <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-700 rounded-2xl p-6 md:p-8 h-full">
                 {/* Top border gradient */}
                 <div className={`absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r ${item.borderGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
 
                 {/* Icon and title */}
-                <div className="flex items-start justify-between mb-6">
-                  <div className="flex items-start gap-4">
+                <div className="flex items-start justify-between mb-4 md:mb-6">
+                  <div className="flex items-start gap-3 md:gap-4">
                     <motion.span
-                      className="text-3xl opacity-40 group-hover:opacity-70 transition-opacity duration-500"
+                      className="text-2xl md:text-3xl opacity-40 group-hover:opacity-70 transition-opacity duration-500"
                       style={{ color: item.accentColor }}
                       whileHover={{ rotate: 180 }}
                       transition={{ duration: 0.6 }}
@@ -210,7 +220,7 @@ export default function TechnologyPage() {
                       {item.icon}
                     </motion.span>
                     <h3
-                      className="text-xl md:text-2xl font-light tracking-tight"
+                      className="text-lg md:text-xl lg:text-2xl font-light tracking-tight"
                       style={{ color: '#e8e8f0' }}
                     >
                       {item.title}
@@ -219,21 +229,21 @@ export default function TechnologyPage() {
 
                   {/* Corner accent */}
                   <motion.div
-                    className="w-8 h-8 border-r border-t opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-tr-2xl"
+                    className="w-6 h-6 md:w-8 md:h-8 border-r border-t opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-tr-2xl"
                     style={{ borderColor: item.accentColor }}
                   />
                 </div>
 
                 {/* Description */}
                 <p
-                  className="text-sm md:text-base font-light leading-relaxed"
+                  className="text-xs md:text-sm lg:text-base font-light leading-relaxed"
                   style={{ color: '#9d9db8' }}
                 >
                   {item.copy}
                 </p>
 
                 {/* Bottom corner accent */}
-                <div className="absolute bottom-0 right-0 w-16 h-16 border-r border-b border-white/5 group-hover:border-white/10 transition-colors duration-500 rounded-br-2xl" />
+                <div className="absolute bottom-0 right-0 w-12 h-12 md:w-16 md:h-16 border-r border-b border-white/5 group-hover:border-white/10 transition-colors duration-500 rounded-br-2xl" />
 
                 {/* Animated line on hover */}
                 <motion.div
@@ -247,9 +257,9 @@ export default function TechnologyPage() {
           ))}
         </motion.div>
 
-        {/* Decorative elements */}
+        {/* Decorative elements - hidden on mobile */}
         <motion.div
-          className="absolute top-20 right-10 w-1 h-1 rounded-full bg-indigo-500/50 blur-sm"
+          className="hidden md:block absolute top-20 right-10 w-1 h-1 rounded-full bg-indigo-500/50 blur-sm"
           animate={{
             scale: [1, 1.5, 1],
             opacity: [0.3, 0.6, 0.3]
@@ -261,7 +271,7 @@ export default function TechnologyPage() {
           }}
         />
         <motion.div
-          className="absolute bottom-40 left-10 w-1 h-1 rounded-full bg-purple-500/50 blur-sm"
+          className="hidden md:block absolute bottom-40 left-10 w-1 h-1 rounded-full bg-purple-500/50 blur-sm"
           animate={{
             scale: [1, 1.5, 1],
             opacity: [0.3, 0.6, 0.3]
@@ -277,7 +287,7 @@ export default function TechnologyPage() {
 
       {/* Floating ambient particles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-5">
-        {[...Array(10)].map((_, i) => (
+        {[...Array(isMobile ? 6 : 10)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full"
@@ -305,29 +315,29 @@ export default function TechnologyPage() {
       </div>
 
       {/* Systems Thinking Section */}
-      <section className="relative py-32 px-6">
+      <section className="relative py-20 md:py-32 px-6">
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            viewport={{ once: true, margin: isMobile ? "-50px" : "-100px", amount: isMobile ? 0.1 : 0.3 }}
+            transition={{ duration: isMobile ? 0.6 : 0.8 }}
+            className="text-center mb-12 md:mb-16"
           >
             <motion.div
-              className="inline-block mb-6"
+              className="inline-block mb-4 md:mb-6"
               whileHover={{ scale: 1.05 }}
             >
               <div className="relative">
                 <div className="absolute inset-0 blur-xl bg-purple-500/10 rounded-full" />
-                <p className="relative text-[10px] md:text-xs uppercase tracking-[0.5em] font-light px-6 py-2 rounded-full border border-purple-500/30" style={{ color: '#9d9db8' }}>
+                <p className="relative text-[10px] md:text-xs uppercase tracking-[0.5em] font-light px-4 md:px-6 py-1.5 md:py-2 rounded-full border border-purple-500/30" style={{ color: '#9d9db8' }}>
                   Philosophy
                 </p>
               </div>
             </motion.div>
 
             <h2
-              className="text-3xl md:text-5xl font-extralight tracking-[-0.02em] mb-6 pb-2"
+              className="text-2xl md:text-3xl lg:text-5xl font-extralight tracking-[-0.02em] mb-4 md:mb-6 pb-2"
               style={{
                 background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
                 WebkitBackgroundClip: 'text',
@@ -337,34 +347,33 @@ export default function TechnologyPage() {
             >
               Systems Thinking
             </h2>
-    
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.8 }}
-            className="backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] rounded-2xl p-8 md:p-12"
+            viewport={{ once: true, margin: isMobile ? "-30px" : "-50px", amount: isMobile ? 0.1 : 0.3 }}
+            transition={{ duration: isMobile ? 0.6 : 0.8 }}
+            className="backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] rounded-2xl p-6 md:p-8 lg:p-12"
           >
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               <p
-                className="text-base md:text-lg font-light leading-relaxed"
+                className="text-sm md:text-base lg:text-lg font-light leading-relaxed"
                 style={{ color: '#9d9db8' }}
               >
                 Building software is about understanding relationships between components, anticipating edge cases, and designing for both current needs and future evolution.
               </p>
 
               <p
-                className="text-base md:text-lg font-light leading-relaxed"
+                className="text-sm md:text-base lg:text-lg font-light leading-relaxed"
                 style={{ color: '#9d9db8' }}
               >
                 This mindset extends beyond code—into architecture, infrastructure, deployment, monitoring, and maintenance. Every piece fits into a larger system, and every decision carries weight.
               </p>
 
-              <div className="pt-4">
+              <div className="pt-2 md:pt-4">
                 <p
-                  className="text-base md:text-lg font-light leading-relaxed"
+                  className="text-sm md:text-base lg:text-lg font-light leading-relaxed"
                   style={{ color: '#e8e8f0' }}
                 >
                   The result is software that operates predictably, scales gracefully, and remains maintainable over time.
@@ -376,39 +385,39 @@ export default function TechnologyPage() {
       </section>
 
       {/* Product Overview Section */}
-      <section className="relative py-32 px-6">
+      <section className="relative py-20 md:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            viewport={{ once: true, margin: isMobile ? "-50px" : "-100px", amount: isMobile ? 0.1 : 0.3 }}
+            transition={{ duration: isMobile ? 0.6 : 0.8 }}
+            className="text-center mb-12 md:mb-20"
           >
             <h2
-              className="text-3xl md:text-5xl font-extralight tracking-[-0.02em] mb-4"
+              className="text-2xl md:text-3xl lg:text-5xl font-extralight tracking-[-0.02em] mb-4"
               style={{ color: '#e8e8f0' }}
             >
               Product Overview
             </h2>
-            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto" />
+            <div className="w-20 md:w-24 h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto" />
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.8 }}
+            viewport={{ once: true, margin: isMobile ? "-30px" : "-50px", amount: isMobile ? 0.1 : 0.3 }}
+            transition={{ duration: isMobile ? 0.6 : 0.8 }}
             className="max-w-4xl mx-auto"
           >
-            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] rounded-2xl p-8 md:p-12">
-              <div className="text-center mb-8">
-                <div className="inline-block px-4 py-2 rounded-full border border-purple-500/30 mb-6">
-                  <p className="text-xs uppercase tracking-wider" style={{ color: '#a78bfa' }}>
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] rounded-2xl p-6 md:p-8 lg:p-12">
+              <div className="text-center mb-6 md:mb-8">
+                <div className="inline-block px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-purple-500/30 mb-4 md:mb-6">
+                  <p className="text-[10px] md:text-xs uppercase tracking-wider" style={{ color: '#a78bfa' }}>
                     Currently in Stealth Mode
                   </p>
                 </div>
-                <p className="text-base md:text-lg font-light leading-relaxed" style={{ color: '#9d9db8' }}>
+                <p className="text-sm md:text-base lg:text-lg font-light leading-relaxed" style={{ color: '#9d9db8' }}>
                   Forgestack Labs LLP is currently developing a full-suite software platform for fuel stations,
                   designed to manage daily operations, sales, and accounting.
                 </p>
@@ -419,27 +428,46 @@ export default function TechnologyPage() {
       </section>
 
       {/* Technology Stack Section - Honeycomb Layout */}
-      <section className="relative py-32 px-6">
+      <section className="relative py-20 md:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            viewport={{ once: true, margin: isMobile ? "-50px" : "-100px", amount: isMobile ? 0.1 : 0.3 }}
+            transition={{ duration: isMobile ? 0.6 : 0.8 }}
+            className="text-center mb-12 md:mb-20"
           >
             <h2
-              className="text-3xl md:text-5xl font-extralight tracking-[-0.02em] mb-4"
+              className="text-2xl md:text-3xl lg:text-5xl font-extralight tracking-[-0.02em] mb-4"
               style={{ color: '#e8e8f0' }}
             >
               Technology Stack
             </h2>
-            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto" />
+            <div className="w-20 md:w-24 h-[1px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent mx-auto" />
           </motion.div>
 
-          {/* Honeycomb Grid */}
+          {/* Honeycomb Grid - Responsive */}
           <div className="relative max-w-6xl mx-auto">
-            <div className="flex flex-col items-center gap-4">
+            {/* Mobile: Simple Grid */}
+            <div className="md:hidden grid grid-cols-2 gap-4">
+              {[
+                { name: "React", icon: "⚛️", color: "#61DAFB" },
+                { name: "Next.js", icon: "▲", color: "#FFFFFF" },
+                { name: "JavaScript", icon: "JS", color: "#F7DF1E" },
+                { name: "Node.js", icon: "◆", color: "#339933" },
+                { name: "Tailwind", icon: "~", color: "#06B6D4" },
+                { name: "CSS", icon: "#", color: "#1572B6" },
+                { name: "HTML", icon: "</>", color: "#E34F26" },
+                { name: "PostgreSQL", icon: "🐘", color: "#4169E1" },
+                { name: "Java", icon: FaJava, color: "#007396" },
+                { name: "Flutter", icon: "◊", color: "#02569B" },
+              ].map((tech, index) => (
+                <HexagonTech key={tech.name} tech={tech} index={index} delay={0} isMobile={true} />
+              ))}
+            </div>
+
+            {/* Desktop: Honeycomb Layout */}
+            <div className="hidden md:flex flex-col items-center gap-4">
               {/* Row 1 */}
               <div className="flex gap-4">
                 {[
@@ -447,7 +475,7 @@ export default function TechnologyPage() {
                   { name: "Next.js", icon: "▲", color: "#FFFFFF" },
                   { name: "JavaScript", icon: "JS", color: "#F7DF1E" },
                 ].map((tech, index) => (
-                  <HexagonTech key={tech.name} tech={tech} index={index} delay={0} />
+                  <HexagonTech key={tech.name} tech={tech} index={index} delay={0} isMobile={false} />
                 ))}
               </div>
 
@@ -459,7 +487,7 @@ export default function TechnologyPage() {
                   { name: "CSS", icon: "#", color: "#1572B6" },
                   { name: "HTML", icon: "</>", color: "#E34F26" },
                 ].map((tech, index) => (
-                  <HexagonTech key={tech.name} tech={tech} index={index} delay={0.15} />
+                  <HexagonTech key={tech.name} tech={tech} index={index} delay={0.15} isMobile={false} />
                 ))}
               </div>
 
@@ -470,7 +498,7 @@ export default function TechnologyPage() {
                   { name: "Java", icon: FaJava, color: "#007396" },
                   { name: "Flutter", icon: "◊", color: "#02569B" },
                 ].map((tech, index) => (
-                  <HexagonTech key={tech.name} tech={tech} index={index} delay={0.3} />
+                  <HexagonTech key={tech.name} tech={tech} index={index} delay={0.3} isMobile={false} />
                 ))}
               </div>
             </div>
@@ -479,18 +507,18 @@ export default function TechnologyPage() {
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="mt-20 text-center"
+              viewport={{ once: true, margin: isMobile ? "-30px" : "-50px", amount: isMobile ? 0.1 : 0.3 }}
+              transition={{ duration: isMobile ? 0.6 : 0.8, delay: isMobile ? 0.3 : 0.5 }}
+              className="mt-12 md:mt-20 text-center"
             >
               <h3
-                className="text-2xl md:text-3xl font-extralight tracking-[-0.02em] mb-8"
+                className="text-xl md:text-2xl lg:text-3xl font-extralight tracking-[-0.02em] mb-6 md:mb-8"
                 style={{ color: '#e8e8f0' }}
               >
                 Development Tools
               </h3>
 
-              <div className="flex justify-center gap-8 flex-wrap">
+              <div className="flex justify-center gap-4 md:gap-8 flex-wrap">
                 {[
                   { name: "Postman", icon: SiPostman, color: "#FF6C37" },
                   { name: "Insomnia", icon: SiInsomnia, color: "#4000BF" },
@@ -499,8 +527,8 @@ export default function TechnologyPage() {
                     key={tool.name}
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.6 + index * 0.1 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ duration: isMobile ? 0.4 : 0.6, delay: (isMobile ? 0.4 : 0.6) + index * 0.1 }}
                     whileHover={{ scale: 1.1, y: -8, transition: { duration: 0.3 } }}
                     className="group relative"
                   >
@@ -509,21 +537,20 @@ export default function TechnologyPage() {
                       style={{ background: `${tool.color}20` }}
                     />
 
-                    <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-700 rounded-2xl px-8 py-6 min-w-[160px]">
+                    <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] hover:border-white/[0.15] transition-all duration-700 rounded-2xl px-6 md:px-8 py-4 md:py-6 min-w-[140px] md:min-w-[160px]">
                       <div
                         className="absolute top-0 left-0 right-0 h-[1px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"
                         style={{ background: `linear-gradient(to right, ${tool.color}40, transparent)` }}
                       />
 
-                      <div className="flex flex-col items-center gap-3">
+                      <div className="flex flex-col items-center gap-2 md:gap-3">
                         {(() => {
                           const Icon = tool.icon;
-                          return <Icon className="text-4xl" style={{ color: tool.color }} />;
+                          return <Icon className="text-3xl md:text-4xl" style={{ color: tool.color }} />;
                         })()}
 
-
                         <p
-                          className="text-lg font-light"
+                          className="text-base md:text-lg font-light"
                           style={{ color: '#e8e8f0' }}
                         >
                           {tool.name}
@@ -566,25 +593,27 @@ export default function TechnologyPage() {
 }
 
 // Hexagon Component
-function HexagonTech({ tech, index, delay }: HexagonTechProps) {
+function HexagonTech({ tech, index, delay, isMobile }: HexagonTechProps) {
+  const size = isMobile ? 100 : 140;
+  
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: isMobile ? "-30px" : "-100px", amount: isMobile ? 0.1 : 0.3 }}
       transition={{
-        duration: 0.6,
-        delay: delay + index * 0.1,
+        duration: isMobile ? 0.4 : 0.6,
+        delay: delay + index * (isMobile ? 0.05 : 0.1),
         type: "spring",
         stiffness: 100
       }}
       whileHover={{
-        scale: 1.15,
+        scale: isMobile ? 1.08 : 1.15,
         rotate: 5,
         transition: { duration: 0.3 }
       }}
       className="group relative"
-      style={{ width: '140px', height: '140px' }}
+      style={{ width: `${size}px`, height: `${size}px` }}
     >
       {/* Glow effect */}
       <div
@@ -613,7 +642,7 @@ function HexagonTech({ tech, index, delay }: HexagonTechProps) {
 
         {/* Icon */}
         <motion.div
-          className="text-4xl mb-2"
+          className={isMobile ? "text-2xl mb-1" : "text-4xl mb-2"}
           animate={{
             rotate: [0, 5, 0, -5, 0]
           }}
@@ -629,12 +658,11 @@ function HexagonTech({ tech, index, delay }: HexagonTechProps) {
           ) : (
             <tech.icon />
           )}
-
         </motion.div>
 
         {/* Name */}
         <p
-          className="text-sm font-light text-center px-2"
+          className={`font-light text-center px-2 ${isMobile ? 'text-xs' : 'text-sm'}`}
           style={{ color: '#e8e8f0' }}
         >
           {tech.name}
