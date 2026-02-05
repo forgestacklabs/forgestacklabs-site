@@ -16,7 +16,8 @@ export default function HomePage() {
   const scale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowIntro(false), 1800);
+    // Increased from 3500ms to 5500ms so animation stays visible longer
+    const timer = setTimeout(() => setShowIntro(false), 5500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -48,67 +49,105 @@ export default function HomePage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {/* Animated grid background */}
+            {/* Particle animation background */}
             <div className="absolute inset-0 bg-[#0a0a0f]">
-              {/* Dynamic grid cells */}
-              <div className="grid grid-cols-12 grid-rows-8 h-full w-full">
-                {[...Array(96)].map((_, i) => (
-                  <motion.div
+              {/* Floating particles */}
+              {[...Array(100)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute rounded-full"
+                  style={{
+                    width: Math.random() * 4 + 1,
+                    height: Math.random() * 4 + 1,
+                    background: `radial-gradient(circle, ${
+                      ['#818cf8', '#a78bfa', '#c084fc', '#e879f9'][i % 4]
+                    }, transparent)`,
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                  }}
+                  initial={{ 
+                    opacity: 0,
+                    scale: 0
+                  }}
+                  animate={{
+                    opacity: [0, 0.8, 0.4, 0.8, 0],
+                    scale: [0, 1.5, 1, 1.2, 0],
+                    y: [0, -50 - Math.random() * 100],
+                    x: [0, (Math.random() - 0.5) * 100]
+                  }}
+                  transition={{
+                    duration: 3 + Math.random() * 3,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                    ease: "easeInOut"
+                  }}
+                />
+              ))}
+              
+              {/* Connecting lines between particles */}
+              <svg className="absolute inset-0 w-full h-full opacity-20">
+                <defs>
+                  <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#818cf8" stopOpacity="0.6" />
+                    <stop offset="100%" stopColor="#c084fc" stopOpacity="0.1" />
+                  </linearGradient>
+                </defs>
+                {[...Array(20)].map((_, i) => (
+                  <motion.line
                     key={i}
-                    className="border border-indigo-500/10"
-                    initial={{ 
-                      backgroundColor: 'rgba(99, 102, 241, 0)',
-                      scale: 0 
-                    }}
+                    x1={`${Math.random() * 100}%`}
+                    y1={`${Math.random() * 100}%`}
+                    x2={`${Math.random() * 100}%`}
+                    y2={`${Math.random() * 100}%`}
+                    stroke="url(#lineGradient)"
+                    strokeWidth="1"
+                    initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ 
-                      backgroundColor: [
-                        'rgba(99, 102, 241, 0)',
-                        `rgba(${99 + Math.random() * 100}, ${102 + Math.random() * 100}, 241, ${Math.random() * 0.3})`,
-                        'rgba(99, 102, 241, 0)'
-                      ],
-                      scale: [0, 1, 0]
+                      pathLength: [0, 1, 0],
+                      opacity: [0, 0.5, 0]
                     }}
                     transition={{
-                      duration: 1.5,
-                      delay: (i % 12) * 0.05 + Math.floor(i / 12) * 0.08,
+                      duration: 4,
                       repeat: Infinity,
-                      repeatDelay: 0.5
+                      delay: i * 0.2,
+                      ease: "easeInOut"
                     }}
                   />
                 ))}
-              </div>
+              </svg>
 
-              {/* Scanning lines */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-b from-transparent via-indigo-500/20 to-transparent h-32"
-                animate={{
-                  y: ['-100%', '200%']
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-              />
-              
-              {/* Horizontal scan */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/20 to-transparent w-32"
-                animate={{
-                  x: ['-100%', '200%']
-                }}
-                transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  ease: "linear",
-                  delay: 0.5
-                }}
-              />
+              {/* Glowing orbs */}
+              {[...Array(5)].map((_, i) => (
+                <motion.div
+                  key={`orb-${i}`}
+                  className="absolute rounded-full blur-3xl"
+                  style={{
+                    width: 200 + Math.random() * 200,
+                    height: 200 + Math.random() * 200,
+                    background: `radial-gradient(circle, ${
+                      ['#818cf8', '#a78bfa', '#c084fc'][i % 3]
+                    }20, transparent)`,
+                    left: `${20 + i * 15}%`,
+                    top: `${10 + i * 20}%`,
+                  }}
+                  animate={{
+                    x: [0, 50, -30, 0],
+                    y: [0, -40, 60, 0],
+                    scale: [1, 1.2, 0.9, 1],
+                    opacity: [0.3, 0.6, 0.4, 0.3]
+                  }}
+                  transition={{
+                    duration: 8 + i * 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+              ))}
             </div>
 
             {/* Glitch overlay */}
             <motion.div
-              className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5"
+              className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5"
               animate={{
                 opacity: [0.3, 0.7, 0.3],
                 scale: [1, 1.02, 1]
@@ -122,138 +161,172 @@ export default function HomePage() {
 
             {/* Content */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20, scale: 1.1 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-center relative px-6 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              transition={{ duration: 1 }}
+              className="text-center relative px-6 z-[100]"
             >
-              {/* Company name with glitch effect */}
-              <motion.p 
-                className="relative text-xs md:text-sm uppercase tracking-[0.8em] font-bold mb-8"
-                style={{ 
-                  color: '#818cf8',
-                  textShadow: '0 0 20px rgba(129, 140, 248, 0.8), 0 0 40px rgba(129, 140, 248, 0.4)'
-                }}
-                animate={{
-                  textShadow: [
-                    '0 0 20px rgba(129, 140, 248, 0.8), 0 0 40px rgba(129, 140, 248, 0.4)',
-                    '0 0 30px rgba(168, 85, 247, 0.9), 0 0 50px rgba(168, 85, 247, 0.5)',
-                    '0 0 20px rgba(129, 140, 248, 0.8), 0 0 40px rgba(129, 140, 248, 0.4)'
-                  ]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity
-                }}
-              >
-                <motion.span
-                  animate={{
-                    x: [-2, 2, -2],
-                    opacity: [1, 0.8, 1]
-                  }}
-                  transition={{
-                    duration: 0.15,
-                    repeat: Infinity,
-                    repeatType: "reverse"
-                  }}
-                >
-                  FORGESTACK LABS
-                </motion.span>
-              </motion.p>
-              
-              {/* Flashy animated text */}
+              {/* Company name - Letter by letter reveal */}
               <motion.h1 
-                className="relative text-4xl md:text-6xl font-black tracking-tight"
+                className="relative text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8"
                 style={{ 
-                  fontFamily: "'Space Grotesk', 'Inter', -apple-system, sans-serif",
-                  background: 'linear-gradient(135deg, #818cf8 0%, #a78bfa 25%, #c084fc 50%, #e879f9 75%, #818cf8 100%)',
-                  backgroundSize: '200% 200%',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  textShadow: '0 0 40px rgba(129, 140, 248, 0.5)'
-                }}
-                animate={{
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "linear"
+                  fontFamily: '"Playwrite NZ Basic", cursive',
+                  fontOpticalSizing: 'auto',
+                  fontWeight: 400,
+                  fontStyle: 'normal',
+                  willChange: 'transform, opacity',
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden'
                 }}
               >
-                <motion.span
-                  animate={{
-                    rotateX: [0, 5, 0],
-                    rotateY: [0, -5, 0]
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  style={{ display: 'inline-block' }}
-                >
-                  When Vision
-                </motion.span>
-                <br />
-                <motion.span
-                  animate={{
-                    rotateX: [0, -5, 0],
-                    rotateY: [0, 5, 0],
-                    scale: [1, 1.05, 1]
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.2
-                  }}
-                  style={{ display: 'inline-block' }}
-                >
-                  Meets Precision
-                </motion.span>
+                <div className="mb-2">
+                  {['F', 'O', 'R', 'G', 'E', 'S', 'T', 'A', 'C', 'K'].map((letter, i) => (
+                    <motion.span
+                      key={`first-${i}`}
+                      initial={{ opacity: 0, y: 50, rotateX: -90 }}
+                      animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: 0.3 + i * 0.08,
+                        ease: "easeOut"
+                      }}
+                      style={{ 
+                fontFamily: "'Inter', -apple-system, sans-serif",
+                background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+                    >
+                      {letter}
+                    </motion.span>
+                  ))}
+                </div>
+                <div>
+                  {['L', 'A', 'B', 'S'].map((letter, i) => (
+                    <motion.span
+                      key={`second-${i}`}
+                      initial={{ opacity: 0, y: 50, rotateX: -90 }}
+                      animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: 1.1 + i * 0.08,
+                        ease: "easeOut"
+                      }}
+                      style={{ 
+                fontFamily: "'Inter', -apple-system, sans-serif",
+                background: 'linear-gradient(135deg, #e8e8f0 0%, #b8b8d0 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+                    >
+                      {letter}
+                    </motion.span>
+                  ))}
+                </div>
               </motion.h1>
+              
+              {/* Divider line that reveals */}
+              <motion.div 
+                className="mx-auto h-[2px] bg-gradient-to-r from-transparent via-indigo-500 to-transparent mb-8"
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: "300px", opacity: 1 }}
+                transition={{ duration: 1, delay: 1.8, ease: "easeOut" }}
+              />
+
+              {/* Tagline - Appears after company name */}
+              <motion.div
+                className="relative text-2xl md:text-4xl font-light tracking-wide"
+                style={{ 
+                  fontFamily: "'Inter', -apple-system, sans-serif",
+                  color: '#e8e8f0'
+                }}
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 2.5 }}
+                  className="overflow-hidden"
+                >
+                  <motion.span
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 2.8 }}
+                    style={{ 
+                      display: 'inline-block',
+                      background: 'linear-gradient(90deg, #e8e8f0 0%, #b8b8d0 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text'
+                    }}
+                  >
+                    When Vision
+                  </motion.span>
+                  {' '}
+                  <motion.span
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 3.2 }}
+                    style={{ 
+                      display: 'inline-block',
+                      background: 'linear-gradient(90deg, #818cf8 0%, #c084fc 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text'
+                    }}
+                  >
+                    Meets Precision
+                  </motion.span>
+                </motion.div>
+              </motion.div>
               
               {/* Animated particles around text */}
               {[...Array(8)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-1 h-1 rounded-full"
+                  className="absolute w-1.5 h-1.5 rounded-full"
                   style={{
                     background: `radial-gradient(circle, ${['#818cf8', '#a78bfa', '#c084fc'][i % 3]}, transparent)`,
-                    left: `${50 + Math.cos((i / 8) * Math.PI * 2) * 40}%`,
-                    top: `${50 + Math.sin((i / 8) * Math.PI * 2) * 40}%`
+                    left: `${50 + Math.cos((i / 8) * Math.PI * 2) * 45}%`,
+                    top: `${50 + Math.sin((i / 8) * Math.PI * 2) * 45}%`
                   }}
+                  initial={{ scale: 0, opacity: 0 }}
                   animate={{
                     scale: [0, 2, 0],
                     opacity: [0, 1, 0],
-                    x: Math.cos((i / 8) * Math.PI * 2) * 50,
-                    y: Math.sin((i / 8) * Math.PI * 2) * 50
+                    x: Math.cos((i / 8) * Math.PI * 2) * 60,
+                    y: Math.sin((i / 8) * Math.PI * 2) * 60
                   }}
                   transition={{
-                    duration: 2,
+                    duration: 3,
                     repeat: Infinity,
-                    delay: i * 0.2
+                    delay: 3.5 + i * 0.2
                   }}
                 />
               ))}
               
               {/* Digital loading bar */}
-              <motion.div className="mt-12 mx-auto max-w-xs">
+              <motion.div 
+                className="mt-12 mx-auto max-w-xs"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 4 }}
+              >
                 <div className="h-1 bg-indigo-900/30 rounded-full overflow-hidden">
                   <motion.div
                     className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
                     initial={{ width: '0%' }}
                     animate={{ width: '100%' }}
-                    transition={{ duration: 1.5, ease: "easeInOut" }}
+                    transition={{ duration: 1.2, delay: 4, ease: "easeInOut" }}
                   />
                 </div>
                 <motion.p
                   className="text-xs text-indigo-400/60 mt-2 font-mono"
-                  animate={{ opacity: [0.4, 1, 0.4] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [0, 1, 0.6, 1, 0.6] }}
+                  transition={{ duration: 2.5, delay: 4, repeat: Infinity }}
                 >
                   INITIALIZING EXPERIENCE...
                 </motion.p>
@@ -274,14 +347,15 @@ export default function HomePage() {
                   ...pos,
                   transform: `rotate(${pos.rotate}deg)`
                 }}
+                initial={{ opacity: 0, scale: 0.8 }}
                 animate={{
-                  opacity: [0.3, 1, 0.3],
-                  scale: [1, 1.1, 1]
+                  opacity: [0, 1, 0.6, 1, 0.6],
+                  scale: [0.8, 1, 1.05, 1]
                 }}
                 transition={{
-                  duration: 2,
+                  duration: 3,
                   repeat: Infinity,
-                  delay: i * 0.2
+                  delay: 0.5 + i * 0.3
                 }}
               />
             ))}
@@ -324,7 +398,7 @@ export default function HomePage() {
                 backgroundClip: 'text'
               }}
             >
-              When Vision
+              Building products
               <br />
               <span className="font-light" style={{
                 background: 'linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #c084fc 100%)',
@@ -332,7 +406,7 @@ export default function HomePage() {
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text'
               }}>
-                Meets Precision
+                that matter
               </span>
             </h1>
             
@@ -462,6 +536,11 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Company Information Section */}
+
+
+
 
       {/* Floating orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden -z-5">

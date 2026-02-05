@@ -1,13 +1,17 @@
 import { Client } from "@notionhq/client";
 
-const notionToken = process.env.NOTION_TOKEN;
-
-export const notionClient = notionToken ? new Client({ auth: notionToken }) : null;
-
 export const notionDatabaseId = process.env.NOTION_DATABASE_ID;
 
+export const notionClient = process.env.NOTION_API_KEY
+  ? new Client({ auth: process.env.NOTION_API_KEY })
+  : null;
+
 export function ensureNotionReady() {
-  if (!notionClient || !notionDatabaseId) {
-    throw new Error("Notion credentials are not configured.");
+  if (!process.env.NOTION_API_KEY) {
+    throw new Error("NOTION_API_KEY is missing");
+  }
+  if (!process.env.NOTION_DATABASE_ID) {
+    throw new Error("NOTION_DATABASE_ID is missing");
   }
 }
+

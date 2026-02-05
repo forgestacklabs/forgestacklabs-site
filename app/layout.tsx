@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import BackgroundField from "@/components/BackgroundField";
 import Footer from "@/components/Footer";
 import Navigation from "@/components/Navigation";
+import ReloadRedirect from "@/components/ReloadRedirect";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -23,9 +24,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  
   return (
     <html lang="en" className={inter.variable}>
       <body className="bg-ink text-white">
+        <ReloadRedirect/>
         <BackgroundField />
         <div className="relative z-10 min-h-screen flex flex-col">
           <Navigation />

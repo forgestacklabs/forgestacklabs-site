@@ -36,7 +36,7 @@ export async function POST(request: Request) {
           email: data.email
         },
         Phone: {
-          phone_number: data.phone || ""
+          rich_text: [{ text: { content: data.phone || "" } }]
         },
         Organization: {
           rich_text: [{ text: { content: data.organization || "" } }]
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
           rich_text: [{ text: { content: data.message } }]
         },
         Source: {
-          rich_text: [{ text: { content: data.source || "Website" } }]
+          select: { name: data.source || "Website" }
         },
         Status: {
           select: { name: "New" }
