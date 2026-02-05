@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect ,useRef} from "react";
 import { useRouter, usePathname } from "next/navigation";
 
 export default function ReloadRedirect() {
   const router = useRouter();
   const pathname = usePathname();
-
+  const hasRun=useRef(false);
   useEffect(() => {
-    // Check if this is a page reload
+  if(hasRun.current){
+    return;
+  }
+  hasRun.current=true;
+
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
     const isReload = navigation?.type === 'reload';
 
@@ -16,7 +20,7 @@ export default function ReloadRedirect() {
     if (isReload && pathname !== '/') {
       router.replace('/');
     }
-  }, []);
+  }, [pathname,router]);
 
   return null;
 }

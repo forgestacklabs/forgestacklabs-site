@@ -238,7 +238,7 @@ export default function TermsOfServicePage() {
 
             <Subsection title="5. Disclaimer" delay={0.3}>
               <p>
-                The information on this website is provided "as is" without any warranties, express or 
+                The information on this website is provided &quot;as is&quot; without any warranties, express or 
                 implied. Forgestack Labs LLP does not warrant that the website will be error-free or 
                 uninterrupted.
               </p>
