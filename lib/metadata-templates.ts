@@ -6,7 +6,7 @@
 // ============================================
 export const homepageMetadata = {
   title: "ForgeStack Labs | Forge Stack Labs - Premium Software Development & Design Talent",
-  description: "ForgeStack Labs connects verified developers and designers with companies that need skilled talent. Find real opportunities, grow your career. Premium software systems built with precision.",
+  description: "We design, engineer, and scale reliable digital products for modern businesses—focused on performance, security, and long-term value.",
   keywords: [
     "ForgeStack Labs",
     "Forge Stack Labs", 
