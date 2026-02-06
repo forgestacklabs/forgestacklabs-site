@@ -6,51 +6,69 @@ import Footer from "@/components/Footer";
 import Navigation from "@/components/Navigation";
 import ReloadRedirect from "@/components/ReloadRedirect";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+/**
+ * ✅ GOOD: Using next/font (best practice)
+ * 🔴 REQUIRED: display:"swap" for LCP
+ * ⚠ variable is fine, but must be applied properly
+ */
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap", // ✅ REQUIRED for fast text paint
+});
 
 export const metadata: Metadata = {
+  /**
+   * ⚠ VERY LONG TITLE earlier caused snippet instability
+   * ✅ Cleaned but still strong
+   */
   title: {
-    default: "ForgeStack Labs | Forge Stack - When Vision Meets Precision - Premium Software Development",
+    default: "ForgeStack Labs | When Vision Meets Precision",
     template: "%s | ForgeStack Labs",
   },
+
+  /**
+   * ✅ GOOD description
+   * ⚠ Don’t change frequently (Google rewrites snippets if you do)
+   */
   description:
-    "ForgeStack Labs connects verified developers and designers with companies that need skilled talent. Find real opportunities, grow your career. Premium software systems and digital products built with precision and long-term intent.",
+    "ForgeStack Labs builds resilient, scalable software systems and digital products with precision engineering and long-term intent.",
+
   metadataBase: new URL("https://forgestacklabs.com"),
-  
-  // Enhanced keywords with alternate names
+
+  /**
+   * ⚠ SAFE BUT UNNECESSARY:
+   * Google ignores most keywords today.
+   * Keep brand + a few core terms only.
+   */
   keywords: [
     "ForgeStack Labs",
-    "Forge Stack Labs",
     "ForgeStack",
     "Forge Stack",
-    "forgestacklabs.com",
     "software development",
-    "custom software",
     "technology studio",
-    "software systems",
     "precision engineering",
-    "web development",
-    "mobile app development",
-    "digital products",
-    "software consulting",
-    "tech talent",
-    "developer opportunities",
-    "designer opportunities",
   ],
-  
-  // Author and publisher info
+
   authors: [{ name: "ForgeStack Labs" }],
   creator: "ForgeStack Labs",
   publisher: "ForgeStack Labs",
-  
-  // Additional metadata
+
   applicationName: "ForgeStack Labs",
+
+  /**
+   * ✅ GOOD security referrer policy
+   */
   referrer: "origin-when-cross-origin",
-  
-  // Enhanced Open Graph
+
+  /**
+   * ✅ GOOD Open Graph
+   * ⚠ Images must exist or OG may be ignored
+   */
   openGraph: {
     title: "ForgeStack Labs | When Vision Meets Precision",
-    description: "ForgeStack Labs connects verified developers and designers with companies that need skilled talent. Find real opportunities, grow your career.",
+    description:
+      "Precision-engineered software systems and digital products built with long-term intent.",
     url: "https://forgestacklabs.com",
     siteName: "ForgeStack Labs",
     locale: "en_US",
@@ -60,176 +78,102 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ForgeStack Labs - When Vision Meets Precision",
+        alt: "ForgeStack Labs – When Vision Meets Precision",
       },
     ],
   },
-  
-  // Enhanced Twitter Card
+
+  /**
+   * ⚠ SAFE but optional (no Twitter handle yet)
+   */
   twitter: {
     card: "summary_large_image",
     title: "ForgeStack Labs | When Vision Meets Precision",
-    description: "ForgeStack Labs connects verified developers and designers with companies that need skilled talent.",
+    description:
+      "Precision-engineered software systems and digital products.",
     images: ["/og-image.png"],
-    creator: "@forgestacklabs", // Add your Twitter handle if you have one
   },
-  
-  // Robots directives
+
+  /**
+   * ✅ GOOD robots config
+   */
   robots: {
     index: true,
     follow: true,
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-  
-  // Verification (add these when you have them)
-  // verification: {
-  //   google: "your-google-verification-code",
-  //   yandex: "your-yandex-verification-code",
-  // },
 };
 
 export default function RootLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
-  
-  // Enhanced Schema markup for better SEO
+  /**
+   * ✅ REQUIRED schema (Organization)
+   * ⚠ Earlier version had GeoCircle + fake coordinates → BAD
+   * This version is clean & trusted
+   */
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "ForgeStack Labs",
-    "alternateName": [
-      "Forge Stack Labs", 
-      "ForgeStack", 
-      "Forge Stack",
-      "forgestacklabs.com",
-      "forgestacklabs"
-    ],
-    "url": "https://forgestacklabs.com",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://forgestacklabs.com/logo.png",
-      "width": "512",
-      "height": "512"
-    },
-    "description": "ForgeStack Labs connects verified developers and designers with companies that need skilled talent. Find real opportunities, grow your career. We build software systems and digital products with precision and long-term intent.",
-    "foundingDate": "2024",
-    "slogan": "When Vision Meets Precision",
-    "knowsAbout": [
-      "Software Development",
-      "Web Development",
-      "Mobile App Development",
-      "Digital Product Design",
-      "Software Engineering",
-      "Technology Consulting"
-    ],
-    "areaServed": {
-      "@type": "GeoCircle",
-      "geoMidpoint": {
-        "@type": "GeoCoordinates",
-        "latitude": "0",
-        "longitude": "0"
-      },
-      "geoRadius": "20000000"
-    },
-    "sameAs": [
-      // Add your social media profiles here when available
-      // "https://twitter.com/forgestacklabs",
-      // "https://linkedin.com/company/forgestacklabs",
-      // "https://github.com/forgestacklabs"
-    ]
-  };
-
-  // WebSite schema for search box and site navigation
-  const websiteSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "ForgeStack Labs",
-    "alternateName": ["Forge Stack Labs", "Forge Stack", "ForgeStack"],
-    "url": "https://forgestacklabs.com",
-    "description": "ForgeStack Labs connects verified developers and designers with companies that need skilled talent.",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://forgestacklabs.com/search?q={search_term_string}"
-      },
-      "query-input": "required name=search_term_string"
-    }
-  };
-
-  // BreadcrumbList schema for better navigation understanding
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://forgestacklabs.com"
-      }
-    ]
+    name: "ForgeStack Labs",
+    alternateName: ["ForgeStack", "Forge Stack"],
+    url: "https://forgestacklabs.com",
+    logo: "https://forgestacklabs.com/logo.png",
+    slogan: "When Vision Meets Precision",
+    description:
+      "ForgeStack Labs builds precision-engineered software systems and digital products with long-term intent.",
   };
 
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        {/* Canonical URL */}
+        {/* ✅ REQUIRED canonical */}
         <link rel="canonical" href="https://forgestacklabs.com" />
-        
-        {/* Alternate URLs for brand variations - helps search engines understand */}
-        <link rel="alternate" href="https://forgestacklabs.com" hrefLang="en" />
-        
-        {/* Preconnect for performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
-        {/* DNS Prefetch for external resources */}
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        
-        {/* Load Playwrite NZ Basic font */}
+
+        {/* ⚠ SAFE BUT OPTIONAL
+            Preconnect is fine, but unnecessary if using next/font only */}
+        {/* <link rel="preconnect" href="https://fonts.googleapis.com" /> */}
+        {/* <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" /> */}
+
+        {/* ❌ REMOVED ON PURPOSE
+            Loading Google Fonts via <link> conflicts with next/font
+            Causes LCP delay + CSP issues */}
+        {/* 
         <link 
           href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic:wght@100..400&display=swap" 
           rel="stylesheet" 
-        />
+        /> 
+        */}
 
-        {/* Favicon - make sure you have these files */}
+        {/* ✅ Favicons */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
 
-        {/* Enhanced Schema.org markup */}
+        {/* ✅ REQUIRED schema injection */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema)
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(websiteSchema)
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(breadcrumbSchema)
+            __html: JSON.stringify(organizationSchema),
           }}
         />
       </head>
-      <body className="bg-ink text-white">
+
+      {/* 🔴 IMPORTANT
+          Apply font here, NOT inline on <h1> */}
+      <body className="bg-ink text-white font-sans">
         <ReloadRedirect />
         <BackgroundField />
+
         <div className="relative z-10 min-h-screen flex flex-col">
           <Navigation />
           <main className="flex-1">{children}</main>
