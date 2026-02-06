@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: {
-    default: "ForgeStack Labs | When Vision Meets Precision - Premium Software Development",
+    default: "ForgeStack Labs | Forge Stack - When Vision Meets Precision - Premium Software Development",
     template: "%s | ForgeStack Labs",
   },
   description:
@@ -152,7 +152,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "ForgeStack Labs",
-    "alternateName": "Forge Stack Labs",
+    "alternateName": ["Forge Stack Labs", "Forge Stack", "ForgeStack"],
     "url": "https://forgestacklabs.com",
     "description": "ForgeStack Labs connects verified developers and designers with companies that need skilled talent.",
     "potentialAction": {
