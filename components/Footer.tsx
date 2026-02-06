@@ -1,72 +1,93 @@
 import Link from "next/link";
 
 export default function Footer() {
-  const navigation = [
+  const navMain = [
     { href: "/", label: "Home" },
     { href: "/technology", label: "Technology" },
     { href: "/principles", label: "Approach" },
     { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
+    { href: "/contact", label: "Contact" }
+  ];
+
+  const navLegal = [
     { href: "/privacy", label: "Privacy Policy" },
     { href: "/terms", label: "Terms of Service" }
   ];
 
   return (
     <footer className="border-t border-white/10">
-      <div className="mx-auto w-full max-w-6xl px-6 py-12">
-        <div className="grid gap-12 md:grid-cols-3">
-          {/* Brand Section */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-light tracking-tight text-white/90">
-              FORGESTACK
-            </h3>
-            <p className="text-sm font-light leading-relaxed text-white/50">
-             We are focused on building internal products that solve key industry challenges
-            </p>
+      {/* FULL-WIDTH WRAPPER */}
+      <div className="w-full px-4 sm:px-6 lg:px-12 py-8 md:py-10">
+        {/* CENTERED CONTENT */}
+        <div className="mx-auto max-w-7xl">
+
+          {/* Main footer content */}
+          <div className="flex flex-col gap-6 md:grid md:grid-cols-3 md:gap-10">
+
+            {/* Brand */}
+            <div className="space-y-2">
+              <h3 className="text-base md:text-lg font-light tracking-tight text-white/90">
+                FORGESTACK
+              </h3>
+              <p className="text-xs md:text-sm leading-relaxed text-white/50 max-w-xs">
+                We build internal products that solve real industry challenges.
+              </p>
+            </div>
+
+            {/* Navigation */}
+            <div className="space-y-3">
+              <h4 className="text-[10px] md:text-xs uppercase tracking-[0.25em] text-white/60">
+                Navigation
+              </h4>
+              <nav className="grid grid-cols-2 gap-x-6 gap-y-2">
+                {navMain.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="text-xs md:text-sm text-white/50 hover:text-white/80 transition"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            {/* Contact */}
+            <div className="space-y-3">
+              <h4 className="text-[10px] md:text-xs uppercase tracking-[0.25em] text-white/60">
+                Get in Touch
+              </h4>
+              <a
+                href="mailto:forgestacklabs@forgestacklabs.com"
+                className="block text-xs md:text-sm text-white/50 hover:text-white/80 break-all"
+              >
+                forgestacklabs@forgestacklabs.com
+              </a>
+              <p className="text-xs md:text-sm text-white/50">
+                India · Global
+              </p>
+            </div>
           </div>
 
-          {/* Navigation Section */}
-          <div className="space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.3em] text-white/70">
-              Navigation
-            </h4>
-            <nav className="flex flex-col gap-3">
-              {navigation.map((item) => (
+          {/* Bottom bar */}
+          <div className="mt-6 pt-4 border-t border-white/10 flex flex-col gap-2">
+            <div className="flex gap-4">
+              {navLegal.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-sm font-light text-white/50 transition-colors hover:text-white/80"
+                  className="text-[10px] md:text-xs text-white/40 hover:text-white/70 transition"
                 >
                   {item.label}
                 </Link>
               ))}
-            </nav>
-          </div>
-
-          {/* Contact Section */}
-          <div className="space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.3em] text-white/70">
-              Get in Touch
-            </h4>
-            <div className="flex flex-col gap-3">
-              <a
-                href="mailto:forgestacklabs@forgestacklabs.com"
-                className="text-sm font-light text-white/50 transition-colors hover:text-white/80"
-              >
-                forgestacklabs@forgestacklabs.com
-              </a>
-              <p className="text-sm font-light text-white/50">
-                India | Global
-              </p>
             </div>
-          </div>
-        </div>
 
-        {/* Copyright */}
-        <div className="mt-12 border-t border-white/10 pt-8">
-          <p className="text-xs text-white/40">
-            © 2026 Forgestack Labs LLP. All rights reserved.
-          </p>
+            <p className="text-[10px] md:text-xs text-white/40">
+              © 2026 Forgestack Labs LLP. All rights reserved.
+            </p>
+          </div>
+
         </div>
       </div>
     </footer>
