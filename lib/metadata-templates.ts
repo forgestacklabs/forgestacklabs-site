@@ -19,7 +19,7 @@ export const homepageMetadata = {
   ],
   openGraph: {
     title: "ForgeStack Labs | Connect with Top Tech Talent",
-    description: "ForgeStack Labs connects verified developers and designers with companies that need skilled talent.",
+    description: "We design, engineer, and scale reliable digital products for modern businesses—focused on performance, security, and long-term value.",
     url: "https://forgestacklabs.com",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
