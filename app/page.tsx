@@ -3,7 +3,7 @@
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
-import HomePageSEO from '@/components/HomePageSEO';
+
 
 export default function HomePage() {
   const [showIntro, setShowIntro] = useState(true);
@@ -41,7 +41,7 @@ export default function HomePage() {
 
   return (
     <>
-      <HomePageSEO />
+      
       <div ref={containerRef} className="relative min-h-screen bg-[#0a0a0f]">
         {/* Animated mesh gradient background */}
         <div className="fixed inset-0 -z-10 overflow-hidden">
