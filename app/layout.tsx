@@ -32,7 +32,7 @@ export const metadata: Metadata = {
    * ⚠ Don’t change frequently (Google rewrites snippets if you do)
    */
   description:
-    "ForgeStack Labs builds resilient, scalable software systems and digital products with precision engineering and long-term intent.",
+    "We design, engineer, and scale reliable digital products for modern businesses—focused on performance, security, and long-term value.",
 
   metadataBase: new URL("https://forgestacklabs.com"),
 
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "ForgeStack Labs | When Vision Meets Precision",
     description:
-      "Precision-engineered software systems and digital products built with long-term intent.",
+      "We design, engineer, and scale reliable digital products for modern businesses—focused on performance, security, and long-term value.",
     url: "https://forgestacklabs.com",
     siteName: "ForgeStack Labs",
     locale: "en_US",
@@ -83,20 +83,16 @@ export const metadata: Metadata = {
     ],
   },
 
-  /**
-   * ⚠ SAFE but optional (no Twitter handle yet)
-   */
+
   twitter: {
     card: "summary_large_image",
     title: "ForgeStack Labs | When Vision Meets Precision",
     description:
-      "Precision-engineered software systems and digital products.",
+      "We design, engineer, and scale reliable digital products for modern businesses—focused on performance, security, and long-term value.",
     images: ["/og-image.png"],
   },
 
-  /**
-   * ✅ GOOD robots config
-   */
+
   robots: {
     index: true,
     follow: true,
