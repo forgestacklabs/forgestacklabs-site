@@ -122,7 +122,8 @@ export default function RootLayout({
     name: "ForgeStack Labs",
     alternateName: ["ForgeStack", "Forge Stack"],
     url: "https://forgestacklabs.com",
-    logo: "https://forgestacklabs.com/logo.png",
+    logo: "https://forgestacklabs.com/favicon.png",
+
     slogan: "When Vision Meets Precision",
     description:
       "ForgeStack Labs builds precision-engineered software systems and digital products with long-term intent.",
@@ -150,10 +151,11 @@ export default function RootLayout({
         */}
 
         {/* ✅ Favicons */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
+      {/* ✅ Favicons */}
+<link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
+<link rel="icon" href="/favicon.png" type="image/png" sizes="192x192" />
+<link rel="apple-touch-icon" href="/favicon.png" />
+
 
         {/* ✅ REQUIRED schema injection */}
         <script

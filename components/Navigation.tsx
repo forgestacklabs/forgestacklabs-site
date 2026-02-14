@@ -25,9 +25,17 @@ export default function NavigationAlt() {
   return (
     <header className="relative z-20">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
-        <Link href="/" className="text-sm uppercase tracking-[0.4em] text-white/80 hover:text-white transition-colors">
-          FORGESTACK LABS
-        </Link>
+        <Link href="/" className="flex items-center gap-2">
+  <img
+    src="/logo2.png"
+    alt="ForgeStack Labs"
+    className="h-11 w-auto"
+  />
+  <span className="text-base uppercase tracking-[0.25em] text-white/85 hover:text-white transition-colors">
+    FORGESTACK LABS
+  </span>
+</Link>
+
         
         {/* Desktop Navigation */}
         <nav className="hidden gap-8 md:flex">

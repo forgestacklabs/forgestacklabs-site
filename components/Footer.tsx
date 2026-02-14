@@ -25,14 +25,23 @@ export default function Footer() {
           <div className="flex flex-col gap-6 md:grid md:grid-cols-3 md:gap-10">
 
             {/* Brand */}
-            <div className="space-y-2">
-              <h3 className="text-base md:text-lg font-light tracking-tight text-white/90">
-                FORGESTACK
-              </h3>
-              <p className="text-xs md:text-sm leading-relaxed text-white/50 max-w-xs">
-                We build internal products that solve real industry challenges.
-              </p>
-            </div>
+          <div className="space-y-3">
+  <div className="flex items-center gap-2">
+    <img
+      src="/logo.png"
+      alt="ForgeStack Labs"
+      className="h-9 w-auto"
+    />
+    <h3 className="text-base md:text-lg uppercase tracking-[0.25em] text-white/90">
+      FORGESTACKLABS
+    </h3>
+  </div>
+
+  <p className="text-xs md:text-sm leading-relaxed text-white/50 max-w-xs">
+    We build internal products that solve real industry challenges.
+  </p>
+</div>
+
 
             {/* Navigation */}
             <div className="space-y-3">
